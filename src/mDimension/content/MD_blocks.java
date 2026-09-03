@@ -72,6 +72,7 @@ import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
+import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.blocks.units.UnitFactory;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.*;
@@ -120,6 +121,7 @@ public class MD_blocks {
     infantry_factory,airborne_vessels_factory,
 
     shaping_assembler,
+    eigen_unit_assembler,
             forging_assembler,
             tempering_assembler,
             polarization_assembler,
@@ -2567,6 +2569,28 @@ public class MD_blocks {
             upgrades.addAll(
                     new UnitType[]{MD_UnitTypes.shimmer, MD_UnitTypes.firefly}
             );
+        }};
+
+        eigen_unit_assembler = new MD_UnitAssembler("eigen-unit-assembler"){{
+            requirements(Category.units, with(Items.silicon, 150));
+            regionSuffix = "-assembler";
+            size = 3;
+            plans.add(
+                    new AssemblerUnitPlan(MD_UnitTypes.zircon, 60f * 35, PayloadStack.list(MD_UnitTypes.captive,1)){{
+                        itemReq = with(Items.silicon,70,MD_Items.al_alloy,40);
+                    }},
+                    new AssemblerUnitPlan(MD_UnitTypes.coyote, 60f * 40, PayloadStack.list(MD_UnitTypes.mouse,1)){{
+                        itemReq = with(Items.silicon,80,MD_Items.al_alloy,60);
+                    }},
+                    new AssemblerUnitPlan(MD_UnitTypes.firefly, 60f * 35, PayloadStack.list(MD_UnitTypes.shimmer,1)){{
+                        itemReq = with(Items.silicon,70,MD_Items.polymer,40);
+                    }}
+
+            );
+            areaSize = 5;
+            researchCostMultiplier = 0.4f;
+
+            consumePower(2.0f);
         }};
 
         shaping_assembler = new PayloadPlatformConstructor("shaping-assembler"){{

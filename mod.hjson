@@ -13,6 +13,8 @@ main: "mDimension.MDimensionMod"
 #the mod description as seen in the mod dialog
 description: "A to be produced mod"
 
+repo: "undefined-1026/Mindustry_MultiDimensionalMod"
+
 #the mod version
 version: 0.1.3
 

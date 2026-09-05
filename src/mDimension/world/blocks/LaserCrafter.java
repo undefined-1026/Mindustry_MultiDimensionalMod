@@ -7,7 +7,7 @@ import arc.util.io.Writes;
 import mDimension.content.MD_Fx;
 import mDimension.content.MD_beams;
 import mDimension.entity.BeamEntity;
-import mDimension.meta.md_StatValues;
+import mDimension.meta.MD_StatValues;
 import mDimension.tool.MD_Edge;
 import mDimension.world.data.Beam;
 import mindustry.entities.units.BuildPlan;
@@ -62,7 +62,7 @@ public class LaserCrafter extends GenericCrafter {
     public void setStats() {
         super.setStats();
         stats.add(Stat.output,t->{
-            t.add(md_StatValues.BeamStack(beam,beamPower));
+            t.add(MD_StatValues.BeamStack(beam,beamPower));
         });
     }
 

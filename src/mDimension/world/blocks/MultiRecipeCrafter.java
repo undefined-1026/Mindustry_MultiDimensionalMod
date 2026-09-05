@@ -4,8 +4,8 @@ package mDimension.world.blocks;
 import arc.math.*;
 import arc.util.*;
 import mDimension.consumers.MultiRecipeConsume;
-import mDimension.meta.md_Stat;
-import mDimension.meta.md_StatValues;
+import mDimension.meta.MD_Stat;
+import mDimension.meta.MD_StatValues;
 import mindustry.type.*;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
@@ -68,7 +68,7 @@ public class MultiRecipeCrafter extends GenericCrafter {
         }
 
         if(recipes != null){
-            stats.add(md_Stat.recipes,
+            stats.add(MD_Stat.recipes,
                     table -> {
                 table.row();
                 for(MultiRecipeConsume.Recipe recipe:recipes.consumeRecipe) {
@@ -79,7 +79,7 @@ public class MultiRecipeCrafter extends GenericCrafter {
                     }
                     if(recipe.consumeLiquids!=null){
                         for (LiquidStack stack : recipe.consumeLiquids) {
-                            table.add(md_StatValues.displayLiquid(stack.liquid, stack.amount * (60f / craftTime), false,false)).padRight(2);
+                            table.add(MD_StatValues.displayLiquid(stack.liquid, stack.amount * (60f / craftTime), false,false)).padRight(2);
                         }
                     }
 
@@ -92,7 +92,7 @@ public class MultiRecipeCrafter extends GenericCrafter {
                     }
                     if(recipe.outputLiquids!=null){
                         for (LiquidStack stack : recipe.outputLiquids) {
-                            table.add(md_StatValues.displayLiquid(stack.liquid, stack.amount * (60f / craftTime), false,false)).padRight(2);
+                            table.add(MD_StatValues.displayLiquid(stack.liquid, stack.amount * (60f / craftTime), false,false)).padRight(2);
                         }
                     }
                     table.row();

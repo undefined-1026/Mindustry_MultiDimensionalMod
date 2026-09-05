@@ -4,8 +4,8 @@ import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
-import mDimension.meta.md_Stat;
-import mDimension.meta.md_StatUnit;
+import mDimension.meta.MD_Stat;
+import mDimension.meta.MD_StatUnit;
 import mDimension.tool.ReflectUtils;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -42,29 +42,29 @@ public class MD_complexStatusEffect extends StatusEffect {
         super.setStats();
         if(!reactive) {
             if(armorMultiplier !=1) {
-                stats.addMultModifier(md_Stat.armorMultiplier, armorMultiplier);
+                stats.addMultModifier(MD_Stat.armorMultiplier, armorMultiplier);
             }
             if(armorAdditional !=0) {
-                stats.add(md_Stat.armorAdditional, armorAdditional);
+                stats.add(MD_Stat.armorAdditional, armorAdditional);
             }
 
             if (percentageDamage > 0) {
-                stats.add(md_Stat.percentageDamage, percentageDamage * 6000f, md_StatUnit.percentsecond);
+                stats.add(MD_Stat.percentageDamage, percentageDamage * 6000f, MD_StatUnit.percentsecond);
             } else if (percentageDamage < 0) {
-                stats.add(md_Stat.percentageReply, -1 * percentageDamage * 6000f, md_StatUnit.percentsecond);
+                stats.add(MD_Stat.percentageReply, -1 * percentageDamage * 6000f, MD_StatUnit.percentsecond);
             }
             if(percentageShieldDamage !=0) {
-                stats.add(md_Stat.percentageShieldDamage, percentageShieldDamage * 6000f, md_StatUnit.percentsecond);
+                stats.add(MD_Stat.percentageShieldDamage, percentageShieldDamage * 6000f, MD_StatUnit.percentsecond);
             }
 
         }else {
             if (percentageDamage > 0) {
-                stats.add(md_Stat.percentageDamage, percentageDamage*100f,StatUnit.percent);
+                stats.add(MD_Stat.percentageDamage, percentageDamage*100f,StatUnit.percent);
             } else if (percentageDamage < 0) {
-                stats.add(md_Stat.percentageReply, -1 * percentageDamage*100f,StatUnit.percent);
+                stats.add(MD_Stat.percentageReply, -1 * percentageDamage*100f,StatUnit.percent);
             }
             if(percentageShieldDamage !=0) {
-                stats.add(md_Stat.percentageShieldDamage, percentageShieldDamage*100f, StatUnit.percent);
+                stats.add(MD_Stat.percentageShieldDamage, percentageShieldDamage*100f, StatUnit.percent);
             }
         }
 

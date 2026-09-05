@@ -17,7 +17,7 @@ import mindustry.world.meta.StatValues;
 
 import static mindustry.Vars.iconMed;
 
-public class md_StatValues extends StatValues {
+public class MD_StatValues extends StatValues {
     public static Stack BeamStack(Beam beam, float power){
         return BeamStack(beam.uiIcon,power,beam,true,true);
     }

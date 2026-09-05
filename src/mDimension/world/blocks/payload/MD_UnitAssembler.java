@@ -2,20 +2,38 @@ package mDimension.world.blocks.payload;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.util.Scaling;
 import arc.util.Strings;
+import arc.util.Time;
+import arc.util.Tmp;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.ai.types.AssemblerAI;
+import mindustry.gen.Building;
 import mindustry.gen.Icon;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.graphics.Shaders;
 import mindustry.type.LiquidStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
+import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
+import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
+
+import static mindustry.Vars.*;
 
 public class MD_UnitAssembler extends UnitAssembler {
     public MD_UnitAssembler(String name) {
@@ -38,7 +56,6 @@ public class MD_UnitAssembler extends UnitAssembler {
 
             int tier = 0;
             for(var plan : plans){
-                int ttier = tier;
                 table.table(Styles.grayPanel, t -> {
 
                     if(plan.unit.isBanned()){
@@ -122,6 +139,12 @@ public class MD_UnitAssembler extends UnitAssembler {
         }
 
         @Override
+        public void configure(Object value) {
+            this.progress = this.warmup = 0f;
+            super.configure(value);
+        }
+
+        @Override
         public float efficiencyScale() {
             return type == null?0f:1f;
         }
@@ -129,6 +152,141 @@ public class MD_UnitAssembler extends UnitAssembler {
         @Override
         public boolean shouldConsume() {
             return super.shouldConsume() && type != null;
+        }
+
+        @Override
+        public void draw(){
+            Draw.rect(region, x, y);
+
+            //draw input conveyors
+            for(int i = 0; i < 4; i++){
+                if(blends(i) && i != rotation){
+                    Draw.rect(inRegion, x, y, (i * 90) - 180);
+                }
+            }
+
+            Draw.rect(rotation >= 2 ? sideRegion2 : sideRegion1, x, y, rotdeg());
+
+            Draw.z(Layer.blockOver);
+
+            payRotation = rotdeg();
+            drawPayload();
+
+            Draw.z(Layer.blockOver + 0.1f);
+
+            Draw.rect(topRegion, x, y);
+
+            if(isPayload()) return;
+
+            //draw drone construction
+            if(droneWarmup > 0.001f){
+                Draw.draw(Layer.blockOver + 0.2f, () -> {
+                    Drawf.construct(this, droneType.fullIcon, Pal.accent, 0f, droneProgress, droneWarmup, totalDroneProgress, 14f);
+                });
+            }
+
+            Vec2 spawn = getUnitSpawn();
+            float sx = spawn.x, sy = spawn.y;
+
+            var plan = plan();
+
+            //draw the unit construction as outline
+            if(type != null)Draw.draw(Layer.blockBuilding, () -> {
+                Draw.color(Pal.accent, warmup);
+
+                Shaders.blockbuild.region = plan.unit.fullIcon;
+                Shaders.blockbuild.time = Time.time;
+                Shaders.blockbuild.alpha = warmup;
+                //margin due to units not taking up whole region
+                Shaders.blockbuild.progress = Mathf.clamp(progress + 0.05f);
+
+                Draw.rect(plan.unit.fullIcon, sx, sy, rotdeg() - 90f);
+                Draw.flush();
+                Draw.color();
+                Shaders.blockbuild.alpha = 1f;
+            });
+
+            Draw.reset();
+
+            Draw.z(Layer.buildBeam);
+
+            //draw unit silhouette
+            Draw.mixcol(Tmp.c1.set(Pal.accent).lerp(Pal.remove, invalidWarmup), 1f);
+            Draw.alpha(Math.min(powerWarmup, sameTypeWarmup));
+            if(type != null)Draw.rect(plan.unit.fullIcon, spawn.x, spawn.y, rotdeg() - 90f);
+
+            //build beams do not draw when invalid
+            Draw.alpha(Math.min(1f - invalidWarmup, warmup));
+
+            //draw build beams
+            for(var unit : units){
+                if(!((AssemblerAI)unit.controller()).inPosition()) continue;
+
+                float
+                        px = unit.x + Angles.trnsx(unit.rotation, unit.type.buildBeamOffset),
+                        py = unit.y + Angles.trnsy(unit.rotation, unit.type.buildBeamOffset);
+
+                Drawf.buildBeam(px, py, spawn.x, spawn.y, plan.unit.hitSize/2f);
+            }
+
+            //fill square in middle
+            Fill.square(spawn.x, spawn.y, plan.unit.hitSize/2f);
+
+            Draw.reset();
+
+            Draw.z(Layer.buildBeam);
+
+            float fulls = areaSize * tilesize/2f;
+
+            //draw full area
+            Lines.stroke(2f, Pal.accent);
+            Draw.alpha(powerWarmup);
+            Drawf.dashRectBasic(spawn.x - fulls, spawn.y - fulls, fulls*2f, fulls*2f);
+
+            Draw.reset();
+
+            float outSize = plan.unit.hitSize + 9f;
+
+            if(invalidWarmup > 0){
+                //draw small square for area
+                Lines.stroke(2f, Tmp.c3.set(Pal.accent).lerp(Pal.remove, invalidWarmup).a(invalidWarmup));
+                Drawf.dashSquareBasic(spawn.x, spawn.y, outSize);
+            }
+
+            Draw.reset();
+        }
+
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            return super.acceptPayload(source, payload) && type != null;
+        }
+
+        @Override
+        public void display(Table table){
+            super.display(table);
+
+            if(team != player.team()) return;
+
+            table.row();
+            table.table(t -> {
+                t.left().defaults().left();
+
+
+                t.label(() -> "[accent] -> []" + (type == null?Icon.cancel.toString():unit().emoji() + " " + unit().localizedName));
+            }).pad(4).padLeft(0f).fillX().left();
+        }
+
+        @Override
+        public void write(Writes w) {
+            super.write(w);
+            w.i(type == null?-1:type.id);
+        }
+
+        @Override
+        public void read(Reads r, byte revision) {
+            super.read(r, revision);
+            int id = r.i();
+            type = id<0?null:content.unit(id);
         }
     }
 }

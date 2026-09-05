@@ -5,7 +5,7 @@ import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Strings;
 import mDimension.content.MD_beams;
-import mDimension.meta.md_StatValues;
+import mDimension.meta.MD_StatValues;
 import mDimension.world.data.BeamData;
 import mDimension.world.data.Beam;
 import mindustry.content.Items;
@@ -145,9 +145,9 @@ public class ConsumeBeam extends Consume {
     public void display(Stats stats){
         stats.add(booster ? Stat.booster : Stat.input,t->{
             if(inputBeam == null){
-                t.add(md_StatValues.BeamStack(requiredPower,minWavelength,maxWavelength,true));
+                t.add(MD_StatValues.BeamStack(requiredPower,minWavelength,maxWavelength,true));
             }else{
-                t.add(md_StatValues.BeamStack(inputBeam,requiredPower,false));
+                t.add(MD_StatValues.BeamStack(inputBeam,requiredPower,false));
             }
         });
     }

@@ -7,7 +7,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Tmp;
-import mDimension.meta.md_Stat;
+import mDimension.meta.MD_Stat;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -54,7 +54,7 @@ public class PatienceAbility extends Ability {
     public void addStats(Table t) {
         super.addStats(t);
         t.row();
-        t.add("[stat]"+(int)(maxEffectThreshold*100)+md_Stat.maxEffectThreshold.localized());
+        t.add("[stat]"+(int)(maxEffectThreshold*100)+ MD_Stat.maxEffectThreshold.localized());
         if(health>1){t.row();
         t.add("[white]"+Stat.healthMultiplier.localized()+":[stat]"+(int)(health*100)+" "+ StatUnit.percent.localized());}
         if(damage>1){t.row();

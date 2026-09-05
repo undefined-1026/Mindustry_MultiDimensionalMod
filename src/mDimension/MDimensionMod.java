@@ -4,9 +4,8 @@ import arc.Events;
 import arc.util.Time;
 import mDimension.core.MDRenderer;
 import mDimension.core.MDShaders;
-import mDimension.meta.md_Stat;
-import mDimension.meta.md_StatUnit;
-import mDimension.ui.MD_CreateEmoji;
+import mDimension.meta.MD_Stat;
+import mDimension.meta.MD_StatUnit;
 import mDimension.world.MDEvents;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
@@ -52,8 +51,8 @@ public class MDimensionMod extends Mod {
     public void loadContent() {
 
         MD_beams.load();
-        md_StatUnit.load();
-        md_Stat.load();
+        MD_StatUnit.load();
+        MD_Stat.load();
         MD_StatusEffects.load();
         MD_Items.load();
         MD_Liquids.load();

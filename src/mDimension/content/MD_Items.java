@@ -19,12 +19,12 @@ public class MD_Items {
             alwaysUnlocked = true;
             hidden = true;
         }};
-        aluminium = new Item("aluminium",Color.valueOf("F7A08D")){{
+        aluminium = new Item("aluminium",Color.valueOf("FAA79C")){{
             healthScaling = 0.3f;
             hardness = 1;
             cost = 0.4f;
         }};
-        germanium = new Item("germanium",Color.valueOf("ED93EC")){{
+        germanium = new Item("germanium",Color.valueOf("F99BC4")){{
             healthScaling = 0.4f;
             hardness = 1;
             cost = 0.6f;
@@ -39,7 +39,7 @@ public class MD_Items {
             hardness = 1;
             cost = 3f;
         }};
-        al_alloy = new Item("al-alloy",Color.valueOf("ededff")){{
+        al_alloy = new Item("al-alloy",Color.valueOf("DEE6FF")){{
             healthScaling = 0.5f;
             hardness = 2;
             cost = 0.7f;

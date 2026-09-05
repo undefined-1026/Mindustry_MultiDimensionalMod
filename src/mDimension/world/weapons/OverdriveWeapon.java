@@ -8,7 +8,7 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
-import mDimension.meta.md_Stat;
+import mDimension.meta.MD_Stat;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.core.World;
@@ -45,7 +45,7 @@ public class OverdriveWeapon extends Weapon {
     @Override
     public void addStats(UnitType u, Table w){
         w.row();
-        w.add("[lightgray]" + md_Stat.overdrive.localized() + ": " + (mirror ? "2x " : "") + "[white]" + (int)(speedBoost*100) + " " + StatUnit.percent.localized());
+        w.add("[lightgray]" + MD_Stat.overdrive.localized() + ": " + (mirror ? "2x " : "") + "[white]" + (int)(speedBoost*100) + " " + StatUnit.percent.localized());
     }
 
     @Override

@@ -234,31 +234,31 @@ public class MD_environment {
         dark_crystalline_stoneVent = new SteamVent("dark-crystalline-stone-vent"){{
             parent = blendGroup = darkCrystalFloor;
             effectColor = Color.valueOf("FFE8A1").a(0.7f);
-            attributes.set(md_Attribute.ammonia, 1f);
+            attributes.set(MD_Attribute.ammonia, 1f);
         }};
 
         light_stone_vent = new SteamVent("light-stone-vent"){{
             parent = blendGroup = light_shale_floor;
             effectColor = Color.valueOf("FFE8A1").a(0.7f);
-            attributes.set(md_Attribute.ammonia, 1f);
+            attributes.set(MD_Attribute.ammonia, 1f);
         }};
 
         yellow_ice_vent = new SteamVent("yellow-ice-vent"){{
             parent = blendGroup = yellow_ice;
             effectColor = Color.valueOf("FFE8A1").a(0.7f);
-            attributes.set(md_Attribute.ammonia, 1f);
+            attributes.set(MD_Attribute.ammonia, 1f);
         }};
 
         dark_red_stone_vent = new SteamVent("dark-red-stone-vent"){{
             parent = blendGroup = darkRedStone;
             effectColor = Color.valueOf("FFE8A1").a(0.7f);
-            attributes.set(md_Attribute.ammonia, 1f);
+            attributes.set(MD_Attribute.ammonia, 1f);
         }};
 
         magnetic_shale_stone_vent = new SteamVent("magnetic-shale-stone-vent"){{
             parent = blendGroup = magnetic_shale_stone;
             effectColor = Color.valueOf("FFE8A1").a(0.7f);
-            attributes.set(md_Attribute.ammonia, 1f);
+            attributes.set(MD_Attribute.ammonia, 1f);
         }};
 
         test100 = new CrustFloor("test100"){{

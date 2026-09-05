@@ -434,13 +434,23 @@ public class MD_Fx {
        Fill.circle(e.x,e.y,wid/2);
     }),
 
-    fluffrainShoot = new Effect(20f,e->{
+    fluffrainShoot = new Effect(20f, e->{
         color(e.color,Color.white,e.fin()*0.5f);
         rand.setSeed(e.id);
         for(int i=0;i<7;i++){
             float dr = rand.range(20f);
             v.trns(e.rotation+dr,(rand.random(6f)+3f)*e.finpow());
             v.add(v1.trns(e.rotation+180,8f));
+            Fill.poly(e.x+v.x,e.y+v.y,4,e.fout()*3f);
+        }
+    }),
+
+    diffusionShoot = new Effect(20f, e->{
+        color(e.color,Color.white,e.fin()*0.5f);
+        rand.setSeed(e.id);
+        for(int i=0;i<7;i++){
+            float dr = rand.range(20f);
+            v.trns(e.rotation+dr,(rand.random(6f)+3f)*e.finpow());
             Fill.poly(e.x+v.x,e.y+v.y,4,e.fout()*3f);
         }
     }),

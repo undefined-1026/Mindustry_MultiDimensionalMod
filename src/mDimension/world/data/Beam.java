@@ -12,14 +12,12 @@ import arc.util.Tmp;
 import mDimension.core.MDRenderer;
 import mDimension.draw.MDLines;
 import mDimension.entity.BeamEntity;
-import mDimension.meta.md_Stat;
+import mDimension.meta.MD_Stat;
 import mDimension.tool.Drawff;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
-import mindustry.graphics.Layer;
 import mindustry.logic.LAccess;
 import mindustry.logic.Senseable;
-import mindustry.world.blocks.production.BeamDrill;
 
 public class Beam extends UnlockableContent implements Senseable {
 
@@ -79,7 +77,7 @@ public class Beam extends UnlockableContent implements Senseable {
 
     @Override
     public void setStats() {
-        stats.add(md_Stat.energyLevel,energyLevel);
+        stats.add(MD_Stat.energyLevel,energyLevel);
     }
     public Cons<BeamEntity> beamDrawer= l->{
         basicDraw(l,(last,now)->{

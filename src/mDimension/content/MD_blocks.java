@@ -2053,20 +2053,21 @@ public class MD_blocks {
             squareSprite = false;
             outlineColor = Pal.darkOutline;
             unitSort = UnitSorts.strongest;
-            loadingAmmoTime = 52f;
-            shutDownLoadingSpeedBoost = 1.2f;
+            loadingAmmoTime = 45;
+            shutDownLoadingSpeedBoost = 1.8f;
             ammoAmountReloadSpeedBoost = 6f/25f;
             maxAmmoAmountReloadSpeed = 6f;
-            maxAmmo = 80;
-            reload = 60f;
+            maxAmmo = 160;
+            reload = 40f;
+            inaccuracy=3f;
             ammoPerShot = 3;
             size = 3;
-            range = 8*38f;
+            range = 8*30f;
             shootY = 4.5f;
             minWarmup = 0.7f;
             warmupMaintainTime = 30f;
             shootWarmupSpeed = 0.07f;
-            shootSound = Sounds.shootSalvo;
+            shootSound = Sounds.shootCyclone;
             shootSoundVolume = 2f;
             soundPitchMax = 1.1f;
             soundPitchMin = 0.75f;
@@ -2077,7 +2078,7 @@ public class MD_blocks {
                         2,0,0
                 };
                 shots = 3;
-                shotDelay = 7f;
+                shotDelay = 4f;
             }};
             requirements(Category.turret,with(
                     MD_Items.polymer,220,
@@ -2101,18 +2102,17 @@ public class MD_blocks {
                 );
             }};
             ammo(
-                    MD_Items.al_alloy,new BasicBulletType(17,70){{
+                    MD_Items.al_alloy,new BasicBulletType(14,40){{
                         setDefault(this);
                         trailLength = 8;
                         trailWidth = 2.4f;
                         width = 10;
                         height = 10;
-                        ammoMultiplier = 2;
                         trailColor = backColor = hitColor = MD_Items.al_alloy.color;
                         lifetime = 17.88f;
-                        splashDamage = 35;
+                        splashDamage = 25;
                         splashDamageRadius = 10f;
-                    }},MD_Items.ti_alloy,new BasicBulletType(17,90){{
+                    }},MD_Items.ti_alloy,new BasicBulletType(14,80){{
                         setDefault(this);
                         trailLength = 8;
                         trailWidth = 2.4f;
@@ -2121,10 +2121,9 @@ public class MD_blocks {
                         ammoMultiplier = 4;
                         rangeChange = 8*7f;
                         trailColor = backColor = hitColor = MD_Items.ti_alloy.color.cpy().lerp(Color.white,0.35f);
-                        lifetime = 19.3f;
-                        splashDamage = 50;
+                        splashDamage = 40;
                         splashDamageRadius = 7f;
-                    }},MD_Items.light_ceramic,new BasicBulletType(17,70){{
+                    }},MD_Items.light_ceramic,new BasicBulletType(14,30){{
                         setDefault(this);
                         trailLength = 8;
                         trailWidth = 2.4f;
@@ -2132,17 +2131,18 @@ public class MD_blocks {
                         height = 10;
                         ammoMultiplier = 2;
                         rangeChange = 8*3f;
+                        reloadMultiplier = 0.8f;
                         lightningColor = trailColor = backColor = hitColor = MD_Items.light_ceramic.color;
-                        lifetime = 20.7f;
-                        splashDamage = 30;
-                        splashDamageRadius = 12;
+                        splashDamage = 20;
+                        splashDamageRadius = 15;
                         lightning = 2;
                         lightningCone = 20f;
                         lightningLength = 5;
                         lightningLengthRand = 4;
-                        lightningDamage = 20;
+                        lightningDamage = 12;
                     }}
             );
+            limitRange();
         }};
         crest = new MD_PayloadTurret("crest"){{
             scaledHealth = 440;
@@ -2213,7 +2213,7 @@ public class MD_blocks {
             shootCone = 3f;
             range = 8*79.4f;
             reload = 220;
-            rotateSpeed = 35f/60f;
+            rotateSpeed = 45f/60f;
             coolant = consumeCoolant(40f/60f);
             coolantMultiplier = 0.4f;
             size = 5;
@@ -2225,6 +2225,7 @@ public class MD_blocks {
             soundPitchMin = 1.3f;
             soundPitchMax = 1.65f;
             shootEffect = new MultiEffect(MD_Fx.crestShoot, MD_Fx.crestShootFlame);
+            ammoUseEffect = MD_Fx.casingCrest;
             drawer = new DrawTurret("steady-state-"){{
 
                 float haloY = -15f;
@@ -2232,11 +2233,11 @@ public class MD_blocks {
                 Color haloColor = c("F2F8FF");
                 int dises = 2;
                 float width = 11;
-                for(int i=dises-1;i>0;i--){
+                for(int i=dises-1;i>=0;i--){
                     int j = i;
                     parts.add(new RegionPart("-ammo"){{
                         layerOffset = -0.1f;
-                        x = -0.5f*width + width/(dises)* j;
+                        x = 0.5f*width - width/(dises)* j;
                         moves.addAll(new PartMove(
                                 p->Mathf.clamp(p.reload*2-1),width/(dises),0,0
                         ));

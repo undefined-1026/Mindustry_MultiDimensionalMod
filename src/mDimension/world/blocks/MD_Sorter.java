@@ -60,6 +60,7 @@ public class MD_Sorter extends Sorter {
                 Draw.color(sortItem.color);
                 Draw.rect(center,x,y);
                 Draw.color();
+                Draw.rect(sortItem.fullIcon,x,y,4f,4f);
             }
 
             if (this.block.variants != 0 && this.block.variantRegions != null) {

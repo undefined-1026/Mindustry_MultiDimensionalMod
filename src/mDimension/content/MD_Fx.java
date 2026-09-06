@@ -30,7 +30,7 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.line;
 import static arc.graphics.g2d.Lines.lineAngle;
 import static arc.graphics.g2d.Lines.stroke;
-import static arc.math.Angles.randLenVectors;
+import static arc.math.Angles.*;
 import static mindustry.Vars.tilesize;
 
 public class MD_Fx {
@@ -379,6 +379,23 @@ public class MD_Fx {
                 }
 
             }),
+
+            casingCrest = new Effect(40f, e -> {
+                color(Pal.lightOrange, Pal.lightishGray, Pal.lightishGray, e.fin());
+                alpha(e.fout(0.5f));
+                float rot = Math.abs(e.rotation) + 105;
+                int i=1;
+                float len = (5 + e.finpow() * 15) * i;
+                float lr = rot + Mathf.randomSeedRange(e.id + i + 6, 12 * e.fin()) * i;
+
+                rect(Core.atlas.find(MD_blocks.modname+"casing-big"),
+                        e.x + trnsx(lr, len) + Mathf.randomSeedRange(e.id + i + 7, 3f * e.fin()),
+                        e.y + trnsy(lr, len) + Mathf.randomSeedRange(e.id + i + 8, 3f * e.fin()),
+                        5, 15,
+                        rot + e.fin() * 30 * i
+                );
+
+            }).layer(Layer.bullet),
             payloadInput = new Effect(20f, e -> {
                 if (e.data instanceof Object[] data) {
                     if (data[0] instanceof UnlockableContent cont && data[1] instanceof Vec2 cv) {

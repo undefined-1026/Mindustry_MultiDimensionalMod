@@ -8,7 +8,9 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
+import arc.struct.Bits;
 import arc.util.Scaling;
 import arc.util.Strings;
 import arc.util.Time;
@@ -23,15 +25,16 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
-import mindustry.type.LiquidStack;
-import mindustry.type.UnitType;
+import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
+import mindustry.world.modules.ItemModule;
 
 import static mindustry.Vars.*;
 
@@ -263,7 +266,93 @@ public class MD_UnitAssembler extends UnitAssembler {
 
         @Override
         public void display(Table table){
-            super.display(table);
+            table.table((t) -> {
+                t.left();
+                t.add(new Image(this.block.getDisplayIcon(this.tile))).scaling(Scaling.fit).size(32.0F);
+                t.labelWrap(this.block.getDisplayName(this.tile)).left().width(190.0F).padLeft(5.0F);
+            }).growX().left();
+            table.row();
+            if (this.team == Vars.player.team()) {
+                table.table((bars) -> {
+                    bars.defaults().growX().height(18.0F).pad(4.0F);
+                    this.displayBars(bars);
+                }).growX();
+                table.row();
+                table.table(this::displayConsumption).growX();
+                boolean displayFlow = (this.block.category == Category.distribution || this.block.category == Category.liquid) && this.block.displayFlow;
+                if (displayFlow) {
+                    String ps = " " + StatUnit.perSecond.localized();
+                    ItemModule flowItems = this.flowItems();
+                    if (flowItems != null) {
+                        table.row();
+                        table.left();
+                        table.table((l) -> {
+                            Bits current = new Bits();
+                            Runnable rebuild = () -> {
+                                l.clearChildren();
+                                l.left();
+
+                                for(Item item : Vars.content.items()) {
+                                    if (flowItems.hasFlowItem(item)) {
+                                        l.image(item.uiIcon).scaling(Scaling.fit).padRight(3.0F);
+                                        l.label(() -> flowItems.getFlowRate(item) < 0.0F ? "..." : Strings.fixed(flowItems.getFlowRate(item), 1) + ps).color(Color.lightGray);
+                                        l.row();
+                                    }
+                                }
+
+                            };
+                            rebuild.run();
+                            l.update(() -> {
+                                for(Item item : Vars.content.items()) {
+                                    if (flowItems.hasFlowItem(item) && !current.get(item.id)) {
+                                        current.set(item.id);
+                                        rebuild.run();
+                                    }
+                                }
+
+                            });
+                        }).left();
+                    }
+
+                    if (this.liquids != null) {
+                        table.row();
+                        table.left();
+                        table.table((l) -> {
+                            Bits current = new Bits();
+                            Runnable rebuild = () -> {
+                                l.clearChildren();
+                                l.left();
+
+                                for(Liquid liquid : Vars.content.liquids()) {
+                                    if (this.liquids.hasFlowLiquid(liquid)) {
+                                        l.image(liquid.uiIcon).scaling(Scaling.fit).size(32.0F).padRight(3.0F);
+                                        l.label(() -> this.liquids.getFlowRate(liquid) < 0.0F ? "..." : Strings.fixed(this.liquids.getFlowRate(liquid), 1) + ps).color(Color.lightGray);
+                                        l.row();
+                                    }
+                                }
+
+                            };
+                            rebuild.run();
+                            l.update(() -> {
+                                for(Liquid liquid : Vars.content.liquids()) {
+                                    if (this.liquids.hasFlowLiquid(liquid) && !current.get(liquid.id)) {
+                                        current.set(liquid.id);
+                                        rebuild.run();
+                                    }
+                                }
+
+                            });
+                        }).left();
+                    }
+                }
+
+                if (Vars.net.active() && this.lastAccessed != null) {
+                    table.row();
+                    table.add(Core.bundle.format("lastaccessed", new Object[]{this.lastAccessed})).growX().wrap().left();
+                }
+
+                table.marginBottom(-5.0F);
+            }
 
             if(team != player.team()) return;
 
@@ -272,7 +361,7 @@ public class MD_UnitAssembler extends UnitAssembler {
                 t.left().defaults().left();
 
 
-                t.label(() -> "[accent] -> []" + (type == null?Icon.cancel.toString():unit().emoji() + " " + unit().localizedName));
+                t.label(() -> "[accent] -> []" + (type == null?'\ue815':unit().emoji() + " " + unit().localizedName));
             }).pad(4).padLeft(0f).fillX().left();
         }
 

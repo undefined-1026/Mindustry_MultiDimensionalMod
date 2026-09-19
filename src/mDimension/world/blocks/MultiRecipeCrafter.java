@@ -79,7 +79,7 @@ public class MultiRecipeCrafter extends GenericCrafter {
                     }
                     if(recipe.consumeLiquids!=null){
                         for (LiquidStack stack : recipe.consumeLiquids) {
-                            table.add(MD_StatValues.displayLiquid(stack.liquid, stack.amount * (60f / craftTime), false,false)).padRight(2);
+                            table.add(MD_StatValues.displayLiquid(stack.liquid, stack.amount * (60f), true,false)).padRight(2);
                         }
                     }
 
@@ -92,7 +92,7 @@ public class MultiRecipeCrafter extends GenericCrafter {
                     }
                     if(recipe.outputLiquids!=null){
                         for (LiquidStack stack : recipe.outputLiquids) {
-                            table.add(MD_StatValues.displayLiquid(stack.liquid, stack.amount * (60f / craftTime), false,false)).padRight(2);
+                            table.add(MD_StatValues.displayLiquid(stack.liquid, stack.amount * (60f), true,false)).padRight(2);
                         }
                     }
                     table.row();

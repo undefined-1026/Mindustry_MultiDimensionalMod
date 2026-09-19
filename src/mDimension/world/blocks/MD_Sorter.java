@@ -35,19 +35,21 @@ public class MD_Sorter extends Sorter {
 
     @Override
     public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list){
-        float z = Draw.z();
-        Draw.z(Layer.block-0.1f);
+    }
+
+    @Override
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         if(plan.config == null){
             Draw.rect(cross, plan.drawx(), plan.drawy());
-            return;
+        }else{
+            if(plan.config instanceof Item i){
+                Draw.color(i.color,1);
+                Draw.rect(center, plan.drawx(), plan.drawy());
+                Draw.color();
+                Draw.rect(i.fullIcon,plan.drawx(),plan.drawy(),4f,4f);
+            }
         }
-        Color color = plan.config instanceof Item i ? i.color : plan.config instanceof Liquid l ? l.color : null;
-        if(color == null) return;
-
-        Draw.color(color,1);
-        Draw.rect(center, plan.drawx(), plan.drawy());
-        Draw.color();
-        Draw.z(z);
+        Draw.rect(region,plan.drawx(),plan.drawy());
     }
 
     public class MD_SorterBuild extends SorterBuild {

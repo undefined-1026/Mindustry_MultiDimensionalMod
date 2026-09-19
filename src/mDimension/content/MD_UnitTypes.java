@@ -60,7 +60,7 @@ public class MD_UnitTypes {
     public static UnitType primitive;
 
     //?
-    public static UnitType laborers,farmer;
+    public static UnitType laborers,farmer,engineering_drone;
 
 
     public static void load(){
@@ -1086,6 +1086,7 @@ public class MD_UnitTypes {
                         shootY = 7/4f;
                         mirror = false;
                         top = false;
+                        layerOffset = -0.01f;
                     }}
 //                    new CanBuildingBuildWeapon(){{
 //                        mirror = true;
@@ -1106,7 +1107,6 @@ public class MD_UnitTypes {
             playerControllable = false;
             envDisabled = 0;
             payloadCapacity = 0f;
-            trailLength = 5;
 
             lowAltitude = false;
             flying = true;
@@ -1147,6 +1147,37 @@ public class MD_UnitTypes {
             hidden = true;
         }};
 
+        engineering_drone = new DepicilonUnitType("engineering-drone"){{
+            constructor = BuildingTetherPayloadUnit::create;
+            isEnemy = false;
+            allowedInPayloads = false;
+            defaultCommand = UnitCommand.rebuildCommand;
+            envDisabled = 0;
+            payloadCapacity = 0f;
+
+            lowAltitude = false;
+            flying = true;
+            drag = 0.06f;
+            speed = 3;
+            rotateSpeed = 9f;
+            accel = 0.1f;
+            itemCapacity = 50;
+            health = 180;
+            hitSize = 9;
+            engineSize = 0;
+            engineOffset = 6;
+            hidden = true;
+            buildSpeed = 0.3f;
+            setEnginesMirror(new UnitEngine(4, -3.5f, 7/4f, -45));
+            weapons.add(new CanBuildingBuildWeapon(this.name+"-weapon"){{
+                mirror = true;
+                x = 4;
+                y = -1;
+                shootY = 3f;
+                speedMulti = 1f;
+                layerOffset = -0.01f;
+            }});
+        }};
     }
 
 

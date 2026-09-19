@@ -16,11 +16,11 @@ import mDimension.meta.*;
 public class MD_environment {
     public static Block
             crystallization_oil_deep,crystallization_oil,magnetic_shale_wall,magnetic_shale_stone,brownSandFloor,brownSandWall,
-    light_shale_wall,pure_light_shale_wall,darkCrystallineStoneWall,darkRedStoneWall,
+    light_shale_wall,pure_light_shale_wall,darkCrystallineStoneWall,darkRedStoneWall,germaniumStone,germaniumStoneWall,
             inlayMetalTiles4,darkCrystalFloor,darkCrystallineStone,darkDenseRedStone,darkRedStone,
             light_shale_floor,pure_light_shale_floor,yellow_ice,yellow_ice_wall,chlorite,chlorite_wall,yellow_ice_snow,depthTile1,depthTile2,depthTile3,depthTile4,depthTile5,
     //ore
-    oreAluminium,WallOreTitanium,oreGraphite,oreGermanium,oreChromium,WallOreCopper,
+    oreAluminium,WallOreTitanium,oreGraphite,oreGermanium,WallOreAluminium,oreChromium,WallOreCopper,
     test100,
 
     oreAmmonia,
@@ -85,6 +85,12 @@ public class MD_environment {
 
         oreAluminium = new OreBlock("ore-aluminium", MD_Items.aluminium){{
             oreDefault = true;
+            oreThreshold = 0.846f;
+            oreScale = 24.428572f;
+        }};
+
+        WallOreAluminium = new OreBlock("ore-wall-aluminium", MD_Items.aluminium){{
+            wallOre = true;
             oreThreshold = 0.846f;
             oreScale = 24.428572f;
         }};
@@ -180,15 +186,18 @@ public class MD_environment {
 
         darkCrystalFloor = new Floor("dark-crystal-floor"){{
             variants = 4;
+            mapColor = Color.valueOf("292328");
         }};
 
         darkCrystallineStone = new Floor("dark-crystalline-stone"){{
             variants = 5;
+            mapColor = Color.valueOf("2E1A20");
         }};
 
         darkCrystallineStoneWall = new StaticWall("dark-crystalline-stone-wall"){{
             variants = 4;
             darkCrystallineStone.asFloor().wall = darkCrystalFloor.asFloor().wall = this;
+            mapColor = Color.valueOf("402C32");
         }};
 
         darkRedStone = new Floor("dark-red-stone"){{
@@ -202,7 +211,12 @@ public class MD_environment {
         darkRedStoneWall = new StaticWall("dark-red-stone-wall"){{
             darkDenseRedStone.asFloor().wall = darkRedStone.asFloor().wall = this;
         }};
+        germaniumStone = new Floor("germanium-stone"){{
 
+        }};
+        germaniumStoneWall = new StaticWall("germanium-stone-wall"){{
+            germaniumStone.asFloor().wall= this;
+        }};
         yellow_ice = new Floor("yellow-ice"){{
             variants = 3;
             attributes.set(Attribute.water, 1.5f);

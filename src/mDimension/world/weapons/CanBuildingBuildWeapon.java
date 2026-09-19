@@ -75,7 +75,7 @@ public class CanBuildingBuildWeapon extends Weapon {
 
 
                 var pp = targetUnit.plans.first();
-                Debug.point(pp.x * 8, pp.y * 8);
+                //Debug.point(pp.x * 8, pp.y * 8);
 
             } else {
                 m.target = null;
@@ -224,7 +224,7 @@ public class CanBuildingBuildWeapon extends Weapon {
             Draw.z(z);
         }
     }
-
+//Debug
     public void drawBuildingBeam(float px, float py,BuildWeaponMount mount,Unit unit) {
 
         Draw.z(114.0F);

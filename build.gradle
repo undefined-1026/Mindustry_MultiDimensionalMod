@@ -25,7 +25,7 @@ java{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v159.7'
+    mindustryVersion = 'v160.3'
     annotationVersion = '31301a7c34dc3171765c729ceb0ded583a4d77c3'
 
     jabelVersion = "93fde537c7"

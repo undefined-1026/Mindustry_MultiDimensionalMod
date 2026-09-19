@@ -174,7 +174,7 @@ public class LiquidUnloader extends Block {
             Lines.square(ox, oy, 2f, 45f);
             Lines.stroke(2.5f);
             Lines.line(x + Tmp.v2.x, y + Tmp.v2.y, ox - Tmp.v2.x, oy - Tmp.v2.y);
-            Fill.square(cx,cy,1.2f * 1.8f,ang + 45f);
+            Fill.circle(cx,cy,1.2f * 1.6f);
             Draw.color(color);
             Draw.alpha(1f);
             Lines.stroke(1f);
@@ -182,7 +182,7 @@ public class LiquidUnloader extends Block {
 
             Lines.square(ox, oy, 2f, 45f);
 
-            Fill.square(cx,cy,1.2f,ang + 45f);
+            Fill.circle(cx,cy,1.2f);
             Draw.reset();
         }
 

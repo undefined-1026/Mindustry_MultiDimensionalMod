@@ -165,7 +165,7 @@ public class MultiRecipeConsume extends Consume {
     public boolean hasLiquidStackList(LiquidModule module,LiquidStack[] stacks){
         if(module == null)return true;
         for(var stack:stacks){
-            if(module.get(stack.liquid) < 0.001f){
+            if(module.get(stack.liquid) < 0.01f){
                 return false;
             }
         }

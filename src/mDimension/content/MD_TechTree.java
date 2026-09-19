@@ -27,11 +27,14 @@ public class MD_TechTree {
 
     public static void load(){
         MD_Planets.depicilon.techTree = nodeRoot("depicilon", MD_blocks.coreSteady,()->{
-            node(MD_blocks.al_alloy_smelting,Seq.with(new Objectives.SectorComplete(MD_SectorPresets.starting_point)),()->{
-               node(ammonia_chamber,Seq.with(new Objectives.OnSector(marginal_outpost)),()->{
-                   node(polymer_compressor,Seq.with(new Objectives.OnSector(crystallization_oil_rift)));
-               });
+            node(silicon_reaction_furnace,()->{
+                node(MD_blocks.al_alloy_smelting,()->{
+                    node(ammonia_chamber,Seq.with(new Objectives.OnSector(marginal_outpost)),()->{
+                        node(polymer_compressor);
+                    });
+                });
             });
+
             node(MD_blocks.light_duct,()->{
                 node(MD_blocks.armored_light_duct,()->{
                     node(MD_blocks.stack_rail_conveyor);
@@ -45,34 +48,35 @@ public class MD_TechTree {
                     node(light_overflowGate,()->{
                         node(light_underflowGate);
                     });
-
+                    node(light_junction);
                 });
             });
             node(fluid_conduit,Seq.with(new Research(ammonia)),()->{
                 node(directional_fluid_router,()->{
                     node(fluid_junction);
                 });
-
                 node(fluid_conduit_bridge,()->{
                     node(fluid_unloader);
                 });
+                node(fluid_container);
 
                 node(siphon_pump);
             });
             node(small_impact_drill,()->{
+                node(small_cliff_crusher);
                 node(heavy_pulverizer,()->{
-                    node(small_silicon_arc_furnace,()->{
-
-                    });
                 });
+                node(electric_impact_drill);
                 node(beam_bore,()->{
                     node(ammonia_collector,Seq.with(new OnSector(marginal_outpost)));
                 });
             });
             node(crack,()->{
-                node(fracture);
+                node(fracture,()->{
+                    node(grudge,Seq.with(new Objectives.OnSector(marginal_outpost)));
+                });
                 node(ionize);
-                node(ejection);
+                node(rays,()->node(ejection));
             });
             node(aluminium_wall,()->{
                 node(aluminium_wall_large,()->{
@@ -106,7 +110,7 @@ public class MD_TechTree {
                         nodeProduce(plasma);
                     });
                 });
-                nodeProduce(copper);
+                nodeProduce(germanium);
                 nodeProduce(graphite);
 
                 nodeProduce(ammonia,()->{
@@ -118,19 +122,17 @@ public class MD_TechTree {
             node(infantry_factory,Seq.with(new SectorComplete(starting_point)),()->{
                 node(airborne_vessels_factory,()->{
                     node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
-                        node(firefly,ItemStack.with(polymer,2000,silicon,2000,al_alloy,2000),()->{});
-                        node(lumen,ItemStack.with(copper,3000,silicon,3000),()->{});
+                        node(firefly,ItemStack.with(polymer,1200,silicon,1200,al_alloy,1200),()->{});
+                        node(lumen,ItemStack.with(germanium,150,silicon,200),()->{});
                     });
                 });
 
                 node(captive,ItemStack.with(),()->{
                     node(zircon,ItemStack.with(silicon,2000,al_alloy,2000),()->{});
-                    node(mouse,ItemStack.with(silicon,2500,copper,2500,graphite,2500),()->{});
+                    node(mouse,ItemStack.with(silicon,2500,germanium,2500,graphite,2500),()->{});
                 });
 
-                node(payload_processing_platform,Seq.with(new SectorComplete(marginal_outpost)),()->{
-                    node(shaping_assembler);
-                });
+                node(eigen_unit_assembler);
             });
 
             node(starting_point,()->{
@@ -148,8 +150,7 @@ public class MD_TechTree {
 
             });
 
-
-
+            node(coreEngineering);
         });
     }
 

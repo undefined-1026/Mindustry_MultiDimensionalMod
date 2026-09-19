@@ -62,6 +62,14 @@ public class RadiusItemBridge extends ItemBridge {
     }
 
     @Override
+    public boolean positionsValid(int x1, int y1, int x2, int y2,int range){
+        int dx = Math.abs(x1 - x2);
+        int dy = Math.abs(y1 - y2);
+        // 使用欧几里得距离计算半径
+        return Math.sqrt(dx * dx + dy * dy) <= range;
+    }
+
+    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         drawPotentialLinks(x, y);
         drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);

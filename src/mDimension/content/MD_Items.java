@@ -24,7 +24,7 @@ public class MD_Items {
             hardness = 1;
             cost = 0.4f;
         }};
-        germanium = new Item("germanium",Color.valueOf("F99BC4")){{
+        germanium = new Item("germanium",Color.valueOf("C45C84")){{
             healthScaling = 0.4f;
             hardness = 1;
             cost = 0.6f;

@@ -156,7 +156,7 @@ public class ConsumeBeam extends Consume {
         for (int i=0;i<allConsume.size;i++) {
             ConsumeBeam c = allConsume.get(i);
             for (var e : c.laserDataMap.keys()) {
-                if (e.dead) {
+                if (e!=null&&(e.dead || !e.isValid())) {
                     c.laserDataMap.remove(e);
                 }
             }

@@ -11,7 +11,7 @@ import mindustry.gen.Building;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 
-public class MD_BeamDeflector extends BeamBlock {
+public class MD_BeamDeflector extends BeamBlock implements Slant{
     public boolean canDeflectorParticle = false;
     public Vec2 afterRotation = new Vec2(1,0);
     public static Vec2 v = new Vec2();
@@ -49,21 +49,7 @@ public class MD_BeamDeflector extends BeamBlock {
     public void flipRotation(BuildPlan plan, boolean x) {
         if(!diagonalFlip) {
             super.flipRotation(plan,x);
-        }else if(!x){
-            switch (plan.rotation){
-                case(0)-> plan.rotation = planRotation(3);
-                case(3)-> plan.rotation = planRotation(1);
-                case(1)-> plan.rotation = planRotation(2);
-                case(2)-> plan.rotation = planRotation(1);
-            }
-        }else{
-            switch (plan.rotation){
-                case(0)-> plan.rotation = planRotation(1);
-                case(1)-> plan.rotation = planRotation(0);
-                case(2)-> plan.rotation = planRotation(3);
-                case(3)-> plan.rotation = planRotation(2);
-            }
-        }
+        }else slantFlipRotation(plan,x);
     }
     @Override
     public boolean handleBeam(BeamEntity beam, Building b){

@@ -50,6 +50,10 @@ public class MD_TechTree {
                     });
                     node(light_junction);
                 });
+                node(proof_container,()->{
+                    node(stack);
+                    node(moving_node,Seq.with(new Objectives.SectorComplete(marginal_outpost)));
+                });
             });
             node(fluid_conduit,Seq.with(new Research(ammonia)),()->{
                 node(directional_fluid_router,()->{

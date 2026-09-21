@@ -90,7 +90,7 @@ public class MD_blocks {
     //region defined
     public static Block
             small_silicon_arc_furnace,silicon_reaction_furnace, aluminium_electrolysis_cell, al_alloy_smelting, infrared_laser, ultraviolet_laser, nihility_exciter, ngm_launch_pad,
-            ti_alloy_smelting, helium_factory, test2, diagonal_beam_merging_prism,
+            ti_alloy_smelting, helium_factory, test2, diagonal_beam_merging_prism,light_ceramic_wrapper,
             water_pyrolyzer, carbon_fibre_binder, heavy_pulverizer, polymer_compressor, phase_adder, ammonia_chamber,
     //distribution
     beam_merging_prism, light_junction,
@@ -114,7 +114,7 @@ public class MD_blocks {
     //core
     coreSteady,coreEngineering,proof_container,stack,
     //power
-    internal_energy_pile,magnetic_node,graphite_combustion_chamber,composite_combustion,
+    internal_energy_pile,magnetic_node,large_magnetic_node,graphite_combustion_chamber,composite_combustion,
     //payload
 
     small_payload_conveyor,
@@ -200,8 +200,7 @@ public class MD_blocks {
         //region al_alloy_smelting 铝合金
         al_alloy_smelting = new GenericCrafter("al-alloy-smelting") {{
             squareSprite = false;
-            health = 500;
-            armor = 3;
+            itemCapacity = 30;
             size = 3;
             requirements(Category.crafting, ItemStack.with(
                     MD_Items.aluminium, 80,
@@ -232,12 +231,46 @@ public class MD_blocks {
 
         }};
         //endregion
+        light_ceramic_wrapper = new GenericCrafter("light-ceramic-wrapper"){{
+            requirements(Category.crafting, ItemStack.with(
+                    MD_Items.al_alloy,30,
+                    Items.silicon,50,
+                    MD_Items.polymer,30,
+                    MD_Items.germanium,70
+            ));
+            squareSprite = false;
+            itemCapacity = 20;
+            consumeItem(Items.silicon, 1);
+            consume(new ConsumeBeam(15,MD_beams.near_infrared_light));
+            outputItem = new ItemStack(MD_Items.light_ceramic, 1);
+            craftTime = 120f;
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.12f;
+            consumePower(2.5f);
+            size = 2;
+            hasPower = true;
+            hasLiquids = false;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawArcSmelt() {{
+                        flameRad *= 0.57f;
+                        circleSpace *= 0.57f;
+                        flameRadiusScl *= 1.3f;
+                        flameRadiusMag *= 0.5f;
+                        circleStroke *= 0.7f;
+                        particleRad = 5f;
+                        flameColor = Color.valueOf("DBF549");
+                        midColor = Color.valueOf("F2F285");
+                    }},
+                    new DrawRegion()
+            );
+        }};
         //region ti_alloy_smelting 钛合金
         ti_alloy_smelting = new GenericCrafter("ti-alloy-smelting") {{
             requirements(Category.crafting, ItemStack.with(
-                    MD_Items.al_alloy, 100,
-                    Items.phaseFabric, 45,
-                    MD_Items.aluminium, 150,
+                    MD_Items.al_alloy, 120,
+                    MD_Items.polymer,150,
+                    MD_Items.light_ceramic, 70,
                     Items.silicon, 120
             ));
             health = 500;
@@ -2615,10 +2648,9 @@ public class MD_blocks {
 
         coreEngineering = new MD_SpawnUnitCoreBlock("core-engineering"){{
             requirements(Category.effect, BuildVisibility.coreZoneOnly, with(Items.silicon, 1200, MD_Items.aluminium,1500,MD_Items.al_alloy,500));
-            alwaysUnlocked = true;
-            hasPower = true;
             conductivePower = true;
             isFirstTier = true;
+            researchCostMultiplier = 0.5f;
             unitType =  MD_UnitTypes.primitive;
             spawnUnitType = MD_UnitTypes.engineering_drone;
             unitAmount = 2;
@@ -2677,9 +2709,21 @@ public class MD_blocks {
             laserRange = 7;
             underBullets = true;
             crushFragile = true;
+            solid = false;
             researchCost = with( MD_Items.aluminium, 10);
-            consume(new ConsumePower(1f/60f,300,true));
             enableDrawStatus = false;
+        }};
+        large_magnetic_node = new PowerNode("large-magnetic-node"){{
+            requirements(Category.power, with(MD_Items.aluminium,15,MD_Items.polymer,10,Items.silicon,10));
+            maxNodes = 12;
+            laserRange = 18;
+            underBullets = true;
+            crushFragile = true;
+            solid = false;
+            researchCost = with( MD_Items.aluminium, 10);
+            enableDrawStatus = false;
+            buildCostMultiplier = 0.5f;
+            size=2;
         }};
         graphite_combustion_chamber = new ConsumeGenerator("graphite-combustion-chamber"){{
             requirements(Category.power, with(MD_Items.aluminium, 35, Items.graphite,35));

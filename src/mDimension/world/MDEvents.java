@@ -7,6 +7,8 @@ import arc.struct.Seq;
 import arc.util.Interval;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.consumers.modules.ExtraModule;
+import mDimension.input.MD_DesktopInput;
+import mDimension.input.MD_MobileInput;
 import mDimension.ui.ObjectInspector;
 import mDimension.ui.MDKeyBind;
 import mDimension.world.blocks.flux.Flux;
@@ -40,6 +42,11 @@ public class MDEvents {
             }
             updateGraphs();
 
+        });
+        Events.on(EventType.ClientLoadEvent.class,e->{
+            Vars.control.input.remove();
+            Vars.control.input = Vars.mobile?new MD_MobileInput():new MD_DesktopInput();
+            Vars.control.input.add();
         });
 
         inspector.setPosition(40, 40); // 左下角

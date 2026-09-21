@@ -19,7 +19,7 @@ import java.util.Arrays;
 import static mindustry.world.meta.StatValues.stack;
 
 
-public class LaserCrafter extends GenericCrafter {
+public class LaserCrafter extends GenericCrafter implements Slant{
     public float beamPower = 10f;
     public boolean diagonalFilp = false;
     // one is index;two is laser rotate
@@ -41,21 +41,7 @@ public class LaserCrafter extends GenericCrafter {
     public void flipRotation(BuildPlan plan, boolean x) {
         if(!diagonalFilp) {
             super.flipRotation(plan,x);
-        }else if(!x){
-            switch (plan.rotation){
-                case(0)-> plan.rotation = planRotation(3);
-                case(3)-> plan.rotation = planRotation(1);
-                case(1)-> plan.rotation = planRotation(2);
-                case(2)-> plan.rotation = planRotation(1);
-            }
-        }else{
-            switch (plan.rotation){
-                case(0)-> plan.rotation = planRotation(1);
-                case(1)-> plan.rotation = planRotation(0);
-                case(2)-> plan.rotation = planRotation(3);
-                case(3)-> plan.rotation = planRotation(2);
-            }
-        }
+        }else slantFlipRotation(plan,x);
     }
 
     @Override

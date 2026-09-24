@@ -16,6 +16,8 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Healthc;
 import mindustry.gen.Posc;
 
+import static mindustry.entities.Damage.findPierceLength;
+
 public class RefractedLaserBulletType extends BulletType {
     public RefractedLaserBulletType() {
         super();
@@ -34,14 +36,16 @@ public class RefractedLaserBulletType extends BulletType {
     }
 
     public float refractedRadius = 8 * 8f, length = 80f;
+    public boolean repeatedHit = true;
     public boolean emit = false;
     public Effect LaserEffect = MD_Fx.RefractedLaser;
     public float laserStrokeMulti = 1f;
     public Color laserColor = Color.valueOf("FFE791");
+    public int passBuilds = -1;
 
     @Override
     protected float calculateRange() {
-        return length;
+        return length + refractedRadius-10f;
     }
     Healthc target = null;
     float dst = -1;
@@ -57,7 +61,14 @@ public class RefractedLaserBulletType extends BulletType {
         float sx = b.x,sy = b.y;
         if (emit) {
             float len = Mathf.len(b.aimX - b.x, b.aimY - b.y);
-            if (len > length) {
+            if (passBuilds>0) {
+                float rlen = findPierceLength(b, passBuilds, laserAbsorb,length);
+                if(len > rlen){
+                    Tmp.v1.set(b.aimX, b.aimY).sub(b.x, b.y).scl(rlen / len).add(b.x, b.y);
+                    b.aimX = Tmp.v1.x;
+                    b.aimY = Tmp.v1.y;
+                }
+            }else  if(len > length){
                 Tmp.v1.set(b.aimX, b.aimY).sub(b.x, b.y).scl(length / len).add(b.x, b.y);
                 b.aimX = Tmp.v1.x;
                 b.aimY = Tmp.v1.y;
@@ -72,7 +83,7 @@ public class RefractedLaserBulletType extends BulletType {
 
             Units.nearbyEnemies(b.team, nodePos.x, nodePos.y, refractedRadius, u -> {
                 float udst = u.dst2(nodePos) * (b.collided.contains(u.id) ? 2 : 1);
-                if (!u.dead && (udst < dst || dst < 0) && u != node) {
+                if (!u.dead && u.canTarget(b) && (udst < dst || dst < 0) && u != node && (repeatedHit || !b.hasCollided(u.id))) {
                     dst = udst;
                     target = u;
                 }
@@ -82,9 +93,10 @@ public class RefractedLaserBulletType extends BulletType {
                 dst = -1;
                 Units.nearbyBuildings(nodePos.x, nodePos.y, refractedRadius, u -> {
                     float udst = u.dst2(nodePos) * (b.collided.contains(u.id) ? 2 : 1);
-                    if (b.team != u.team && !u.dead && (udst < dst || dst < 0) && u != node) {
+                    if (b.team != u.team && !u.dead && (udst < dst || dst < 0) && u != node && (repeatedHit || !b.hasCollided(u.id))) {
                         dst = udst;
                         target = u;
+                        b.collided.add(u.id);
                     }
                 });
                 if (target == null) {

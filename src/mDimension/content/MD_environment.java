@@ -223,7 +223,7 @@ public class MD_environment {
         }};
 
         yellow_ice_wall = new StaticWall("yellow-ice-wall"){{
-            yellow_ice.asFloor().wall = darkRedStone.asFloor().wall = this;
+            yellow_ice.asFloor().wall = this;
         }};
 
         chlorite = new Floor("chlorite"){{
@@ -231,7 +231,7 @@ public class MD_environment {
         }};
 
         chlorite_wall = new StaticWall("chlorite-wall"){{
-            chlorite.asFloor().wall = darkRedStone.asFloor().wall = this;
+            chlorite.asFloor().wall = this;
         }};
 
         yellow_ice_snow = new Floor("yellow-ice-snow"){{

@@ -365,7 +365,7 @@ public class MD_Fx {
                 color(e.color);
                 rand.setSeed(e.id);
                 for (int i = 0; i < 5; i++) {
-                    v.trns(e.rotation + rand.range(25), rand.random(10) + 3);
+                    v.trns(e.rotation + rand.range(30), rand.random(8) + 5);
                     float rot = Mathf.angle(v.x, v.y);
                     float len = Mathf.len(v.x, v.y);
                     float len2 = len * len * 0.17f;

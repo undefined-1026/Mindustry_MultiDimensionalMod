@@ -114,7 +114,7 @@ public class MD_UnitTypes {
                 bullet = new BasicBulletType(2.5f, 9){{
                     recoil = 0.18f;
                     spin = 5f;
-                    hitColor=trailColor = backColor = Color.valueOf("B2E9FF");
+                    hitColor=trailColor = backColor = Color.valueOf("D0C2FF");
                     trailLength = 8;
                     trailWidth = 1.5f;
                     trailSinMag = 0.15f;
@@ -148,10 +148,9 @@ public class MD_UnitTypes {
                     damage = 30f;
                     recoil = 0;
                     length = 15*8f;
-                    hitColor=trailColor = toColor = Color.valueOf("B2E9FF");
+                    hitColor=trailColor = toColor = Color.valueOf("D0C2FF");
                     width = 4.3f;
                     hitEffect = MD_Fx.hitBulletColor(6f,5,18);
-
                 }};
             }});
 
@@ -184,7 +183,7 @@ public class MD_UnitTypes {
                             MD_StatusEffects.coordination,
                             4*60f,3.8f*60f,3*8f
                     ){{
-                        activeEffect = MD_Fx.polyWave(4,20f,0,1f,40f,Color.valueOf("D9FFFC"),0.95f);
+                        activeEffect = MD_Fx.polyWave(4,20f,0,1f,40f,Color.valueOf("D0C2FF"),0.95f);
                     }}
             );
 
@@ -217,7 +216,7 @@ public class MD_UnitTypes {
                         bullet = new BasicBulletType(4, 15){{
                             recoil = 0;
                             spin = 7f;
-                            hitColor=trailColor = backColor = Color.valueOf("B2E9FF");
+                            hitColor=trailColor = backColor = Color.valueOf("D0C2FF");
                             hitSound = Sounds.explosionCleroi;
                             hitSoundVolume = 0.4f;
                             trailLength = 8;
@@ -234,13 +233,13 @@ public class MD_UnitTypes {
                             fragOffsetMin = 0;
                             fragOffsetMax = 0;
                             fragBullet = new BasicBulletType(0,15,"circle-bullet"){{
-                                hitColor=trailColor = backColor = Color.valueOf("B2E9FF");
+                                hitColor=trailColor = backColor = Color.valueOf("D0C2FF");
                                 lifetime = 8*60f;
                                 collidesTiles = true;
                                 despawnHit = true;
                                 hitSound = Sounds.explosionCrawler;
 
-                                trailEffect = MD_Fx.Mulitpleslash(50,1,Color.valueOf("EBF8FF"),12,5,6);
+                                trailEffect = MD_Fx.Mulitpleslash(50,1,Color.valueOf("D0C2FF"),12,5,6);
                                 trailInterval = 18f;
                                 hitSoundVolume = 0.4f;
                                 fragBullets = 3;
@@ -261,7 +260,7 @@ public class MD_UnitTypes {
                                     hittable = false;
                                     pierceArmor = true;
                                     serrations = 2;
-
+                                    toColor = Color.valueOf("D0C2FF");
                                 }};
                             }};
                         }};
@@ -313,7 +312,7 @@ public class MD_UnitTypes {
                             pierceCap = 2;
                             pierce = true;
                             armorMultiplier = 0.5f;
-                            hitColor = Color.valueOf("B2E9FF");
+                            hitColor = Color.valueOf("F6FFC7");
                             hitEffect = Fx.hitBulletColor;
                             pierceDamageFactor = 0.5f;
                             inaccuracy = 1.5f;
@@ -406,14 +405,14 @@ public class MD_UnitTypes {
                         bullet = new ShrapnelBulletType(){{
                             length = 7*8f;
                             width = 12f;
-                            shootEffect = smokeEffect = Fx.thoriumShoot;
+                            shootEffect = smokeEffect = Fx.none;
                             serrationSpacing = 6f;
                             serrationFadeOffset = 0.3f;
                             serrationSpaceOffset =30f;
                             serrationLenScl = 6f;
                             lifetime = 15f;
                             damage = 35f;
-                            toColor = Color.valueOf("B2E9FF");
+                            toColor = Color.valueOf("F6FFC7");
                         }};
                     }},
                     new Weapon(modname+"coyote-weapon2"){{
@@ -429,7 +428,7 @@ public class MD_UnitTypes {
                         shootSoundVolume = 0.55f;
                         bullet = new LightningBulletType(){{
                             damage = 18;
-                            lightningColor = Color.valueOf("B2E9FF");
+                            lightningColor = Color.valueOf("F6FFC7");
                             lightningLength = 12;
                         }};
                     }}
@@ -640,7 +639,8 @@ public class MD_UnitTypes {
             accel = 0.04f;
             health = 2100;
             armor = 6f;
-            hitSize = 20f;
+            hitSize = 17;
+            softShadowScl = 0.6f;
             engineSize = 0;
             engineOffset = 0;
             itemCapacity = 60;
@@ -668,7 +668,7 @@ public class MD_UnitTypes {
                         soundPitchMin = 1f;
                         bullet = new RailBulletType(){{
                             length = 20*8;
-                            damage = 450;
+                            damage = 200;
                             trailColor = hitColor = Color.valueOf("D9FCFF");
                             hitEffect = MD_Fx.spikeHitRotationSmall;
                             pierceEffect = Fx.none;
@@ -677,13 +677,13 @@ public class MD_UnitTypes {
                             smokeEffect = Fx.colorSpark;
                             endEffect = new Effect(14f, e -> {
                                 color(e.color);
-                                Drawf.tri(e.x, e.y, e.fout() * 2.5f, 9f, e.rotation);
+                                Drawf.tri(e.x, e.y, e.fout() * 3, 11, e.rotation);
                             });
 
                             pointEffect = new Effect(15f,e->{
                                 color(e.color);
                                 for(int i : Mathf.signs){
-                                    Drawf.tri(e.x, e.y, 12+e.fin()*8f, 2.6f * e.fout(), e.rotation + i * 90);
+                                    Drawf.tri(e.x, e.y, 10+e.fin()*8f, 2.1f * e.fout(), e.rotation + i * 90);
                                 }
                             });
 
@@ -714,7 +714,7 @@ public class MD_UnitTypes {
                                 }
 
                                 e.scaled(14f, b -> {
-                                    stroke(b.fout() * 2.5f);
+                                    stroke(b.fout() * 3f);
                                     color(e.color);
                                     Lines.line(e.x, e.y, v.x, v.y);
                                 });
@@ -747,10 +747,12 @@ public class MD_UnitTypes {
                             setDefault(this);
                             shootEffect = smokeEffect = Fx.none;
                             emit = true;
-                            damage = 150;
-                            length = 20*8f;
+                            damage = 200;
+                            length = 13*8f;
                             laserStrokeMulti = 0.7f;
-                            pierceCap = 5;
+                            repeatedHit = false;
+                            pierceCap = 8;
+                            passBuilds = 1;
                         }};
                     }}
             );

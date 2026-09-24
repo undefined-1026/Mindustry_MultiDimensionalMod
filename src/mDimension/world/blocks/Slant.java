@@ -4,6 +4,7 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.world.Block;
 
 public interface Slant {
+    boolean isSlant();
     default void slantFlipRotation(BuildPlan plan, boolean x) {
         if(this instanceof Block b) {
             if (!x) {

@@ -7,6 +7,7 @@ import mDimension.core.MDShaders;
 import mDimension.meta.MD_Stat;
 import mDimension.meta.MD_StatUnit;
 import mDimension.world.MDEvents;
+import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
@@ -15,17 +16,18 @@ import mindustry.ui.dialogs.BaseDialog;
 import mDimension.content.*;
 
 public class MDimensionMod extends Mod {
-    public static final String MODNAME = "mdimension";
-
+    public static final String MODNAME = "mdimension",
+    BEAM_OPACITY = MODNAME+"-beamopacity"
+    ;
     public MDimensionMod() {
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            Time.runTask(20f, () -> {
+            Time.runTask(20, () -> {
                 BaseDialog welcome = new BaseDialog("Welcome to play Multidimensional");
                 welcome.cont.add("A new journey Let's begin").colspan(2).row();
                 welcome.cont.image(Core.atlas.find("mdimension-evil")).pad(10f);
                 welcome.cont.image(Core.atlas.find("mdimension-neuro")).pad(20f);
-                Time.runTask(200f, welcome::addCloseButton);
+                Time.runTask(1, welcome::addCloseButton);
                 welcome.show();
             });
         });
@@ -38,6 +40,12 @@ public class MDimensionMod extends Mod {
         MDShaders.init();
         MDRenderer.init();
         MDEvents.init();
+
+        Events.on(EventType.ClientLoadEvent.class,e->{
+            Core.app.post(()->{
+                Vars.ui.settings.graphics.sliderPref(BEAM_OPACITY,100,0,100,1,s->s+"%");
+            });
+        });
     }
 
     public void replaceRegion(String from,String to,boolean abbModName){
@@ -59,7 +67,7 @@ public class MDimensionMod extends Mod {
         MD_environment.load();
         MD_UnitTypes.load();
         MD_crops.load();
-        MD_blocks.load();
+        MD_blocks.load();MD_TestBlock.load();
         original_reset.load();
 
         MD_Loadouts.load();

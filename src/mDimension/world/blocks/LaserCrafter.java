@@ -1,15 +1,14 @@
 package mDimension.world.blocks;
 
-import arc.graphics.Color;
 import arc.math.geom.Vec2;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.content.MD_Fx;
 import mDimension.content.MD_beams;
 import mDimension.entity.BeamEntity;
 import mDimension.meta.MD_StatValues;
 import mDimension.tool.MD_Edge;
 import mDimension.world.data.Beam;
+import mindustry.Vars;
 import mindustry.entities.units.BuildPlan;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
@@ -36,12 +35,19 @@ public class LaserCrafter extends GenericCrafter implements Slant{
     public LaserCrafter(String name){
         super(name);
         rotate = true;
+        rotateDraw = false;
+        drawArrow = true;
     }
     @Override
     public void flipRotation(BuildPlan plan, boolean x) {
         if(!diagonalFilp) {
             super.flipRotation(plan,x);
         }else slantFlipRotation(plan,x);
+    }
+
+    @Override
+    public boolean isSlant() {
+        return diagonalFilp;
     }
 
     @Override
@@ -94,7 +100,7 @@ public class LaserCrafter extends GenericCrafter implements Slant{
                     Vec2 p = MD_Edge.transpose(craftPos[i].cpy(),rotation).add(x,y);
                     BeamEntity laserEntity = new BeamEntity(beam,this);
                     laserEntity.create(p.x, p.y, MD_Edge.transpose(craftRotation[i].cpy(),rotation), i);
-                    MD_Fx.waveColor(5f, 3f, 1f).at(p.x * 8, p.y * 8, Color.valueOf("FFFFFF"));
+                    if(this.team == Vars.player.team())laserEntity.beamData.beam.unlock();
                 } else {
                     crafterLasers[i].setPower(efficiency*warmup*beamPower/beamAmount);
                 }

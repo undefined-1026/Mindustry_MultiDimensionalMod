@@ -25,6 +25,11 @@ public class MD_BeamDeflector extends BeamBlock implements Slant{
     }
 
     @Override
+    public boolean isSlant() {
+        return diagonalFlip;
+    }
+
+    @Override
     public void load() {
         super.load();
         drawer.load(this);
@@ -54,7 +59,7 @@ public class MD_BeamDeflector extends BeamBlock implements Slant{
     @Override
     public boolean handleBeam(BeamEntity beam, Building b){
 
-        if(beam.step+1<=beam.cycleLength){
+        if(beam.step+1<=beam.cycleLength && b.enabled){
             rotateVec(afterRotation,v,b.rotation);
             if(v.x != beam.rotation.x || v.y != beam.rotation.y){
                 beam.node(b.x,b.y);

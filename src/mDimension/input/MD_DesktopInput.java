@@ -3,7 +3,6 @@ package mDimension.input;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import mDimension.world.blocks.Slant;
 import mindustry.graphics.Pal;
@@ -15,7 +14,7 @@ import static mindustry.Vars.tilesize;
 public class MD_DesktopInput extends DesktopInput {
     @Override
     public void drawArrow(Block block, int x, int y, int rotation, boolean valid) {
-        if(block instanceof Slant) {
+        if(block instanceof Slant s && s.isSlant()) {
             float trns = (block.size / 2) * tilesize;
             int dx = Geometry.d8edge(rotation).x, dy = Geometry.d8edge(rotation).y;
             float offsetx = x * tilesize + block.offset + dx*trns;

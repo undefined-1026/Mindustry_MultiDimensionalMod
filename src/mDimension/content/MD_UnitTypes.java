@@ -15,6 +15,7 @@ import mDimension.ai.TransportAI;
 import mDimension.entity.ability.AccelerateAbility;
 import mDimension.entity.ability.PatienceAbility;
 import mDimension.entity.bullet.BallLightningBulletType;
+import mDimension.entity.bullet.RefractedLaserBulletType;
 import mDimension.tool.Drawff;
 import mDimension.world.blocks.DepicilonUnitType;
 import mDimension.world.weapons.BoostWeapon;
@@ -25,12 +26,16 @@ import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.CargoAI;
 import mindustry.ai.types.FlyingFollowAI;
+import mindustry.content.Blocks;
 import mindustry.content.Fx;
+import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.part.HaloPart;
+import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootBarrel;
 import mindustry.entities.pattern.ShootHelix;
@@ -44,6 +49,7 @@ import mindustry.type.Weapon;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
+import static mDimension.content.MD_blocks.setDefault;
 import static mindustry.Vars.tilesize;
 
 import static mDimension.content.MD_blocks.modname;
@@ -54,7 +60,7 @@ public class MD_UnitTypes {
 
     public static UnitType captive , zircon;
     public static UnitType mouse,coyote;
-    public static UnitType shimmer , firefly ,burst;
+    public static UnitType shimmer , firefly,pyrolume,burst;
     public static UnitType lumen,floating;
     //coreUnit
     public static UnitType primitive;
@@ -298,7 +304,7 @@ public class MD_UnitTypes {
                         rotate = true;
                         rotateSpeed =5f;
                         shootCone = 2f;
-                        heatColor = Color.valueOf("F90FDA");
+                        heatColor = Color.valueOf("B2E9FF");
                         cooldownTime = 20;
                         shootSound = Sounds.shootScepterSecondary;
                         bullet = new RailBulletType(){{
@@ -307,7 +313,7 @@ public class MD_UnitTypes {
                             pierceCap = 2;
                             pierce = true;
                             armorMultiplier = 0.5f;
-                            hitColor = Color.valueOf("F6A6FF");
+                            hitColor = Color.valueOf("B2E9FF");
                             hitEffect = Fx.hitBulletColor;
                             pierceDamageFactor = 0.5f;
                             inaccuracy = 1.5f;
@@ -359,7 +365,7 @@ public class MD_UnitTypes {
         }};
         coyote = new DepicilonUnitType.DepicilonTankUnitType("coyote"){{
             hitSize = 16;
-            health = 1800f;
+            health = 1200;
             treadPullOffset = 11;
             armor = 6f;
             speed = 10/7.5f;
@@ -407,7 +413,7 @@ public class MD_UnitTypes {
                             serrationLenScl = 6f;
                             lifetime = 15f;
                             damage = 35f;
-                            toColor = Color.valueOf("FFABE6");
+                            toColor = Color.valueOf("B2E9FF");
                         }};
                     }},
                     new Weapon(modname+"coyote-weapon2"){{
@@ -423,7 +429,7 @@ public class MD_UnitTypes {
                         shootSoundVolume = 0.55f;
                         bullet = new LightningBulletType(){{
                             damage = 18;
-                            lightningColor = Color.valueOf("FFABE6");
+                            lightningColor = Color.valueOf("B2E9FF");
                             lightningLength = 12;
                         }};
                     }}
@@ -495,13 +501,13 @@ public class MD_UnitTypes {
                     pierceCap = 2;
                     buildingDamageMultiplier = 0.3f;
 
-                    hitColor = flareColor = Color.valueOf("FFDB78");
+                    hitColor = flareColor = Color.valueOf("B2E9FF");
                     flareLength = 9f;
                     flareWidth = 2f;
                     colors = new Color[]{
-                            Color.valueOf("DB7D42").a(0.45f),
-                            Color.valueOf("E8AC58").a(0.65f),
-                            Color.valueOf("FFDB78").a(0.85f),
+                            Color.valueOf("4263DB").a(0.45f),
+                            Color.valueOf("58A2E8").a(0.65f),
+                            Color.valueOf("78E2FF").a(0.85f),
                             Color.white};
                 }};
             }});
@@ -523,7 +529,7 @@ public class MD_UnitTypes {
                     collidesTiles = false;
                     collides = false;
                     despawnHit = true;
-                    hitColor = Color.valueOf("FFEF97");
+                    hitColor = Color.valueOf("B2E9FF");
                     despawnEffect = new MultiEffect(MD_Fx.spark(25f,15,7*8,16f),
                             MD_Fx.spikeWaveColor(22f,5*8f,2f,10,0.4f,2.5f),
                             MD_Fx.polyStarExplosion(20,3,9*8,5f,0,true)
@@ -561,17 +567,21 @@ public class MD_UnitTypes {
             engineSize = 3.5f;
             engineOffset = 8.5f;
             itemCapacity = 30;
+            setEnginesMirror(
+                    new UnitEngine(4.5f,-8f,2.5f,-45f)
+            );
             weapons.add(new BoostWeapon(modname + "firefly-weapon"){{
-                warmupSpeed = 0.06f/60;
-                dissipateSpeed = 0.2f/60;
-                maxReloadSpeed = 4f;
+                warmupSpeed = 0.12f/60;
+                dissipateSpeed = 0.6f/60;
+                maxReloadSpeed = 10;
                 layerOffset = -0.01f;
+                baseRotation = -30f;
                 parts.addAll(
                         new RegionPart("-barrel"){{
                             heatProgress = PartProgress.recoil.mul(PartProgress.warmup);
                             heatColor = Color.valueOf("FFF5BA");
                             moves.add(new PartMove(PartProgress.warmup.inv()
-                                    ,-6f,2f,0));
+                                    ,-9f,-2f,30f));
                         }}
                 );
                 mirror = true;
@@ -579,22 +589,21 @@ public class MD_UnitTypes {
                 y = -2f;
                 shootY = 4.5f;
                 shootX = -0.5f;
-                range = 25*8f;
+                range = 18*8f;
+                shootCone = 50f;
                 reload = 40f;
                 inaccuracy = 1.2f;
                 minWarmup = 0.7f;
                 shootSound = Sounds.shootDisperse;
                 shootSoundVolume = 1.3f;
-
-                bullet = new BasicBulletType(35f*8f/60f,13){{
-                    smokeEffect = Fx.none;
-                    shootEffect = MD_Fx.shoot1small;
-                    homingPower = 0.01f;
-                    homingRange = 10*8f;
-                    lifetime = 25f/35f * 60f;
+                bullet = new BasicBulletType(35f*8f/60f,10){{
+                    setDefault(this);
+                    homingPower = 0.055f;
+                    homingRange = 6*8f;
+                    lifetime = 20/35f * 60f;
                     width = 10f;
                     height = 16f;
-                    trailColor = hitColor = backColor = Color.valueOf("FFE79E");
+                    trailColor = hitColor = backColor = Color.valueOf("B2E9FF");
                     fragBullets = 1;
                     trailLength = 8;
                     trailWidth  = 2f;
@@ -602,13 +611,14 @@ public class MD_UnitTypes {
                     fragSpread = 0;
                     fragRandomSpread = 0;
                     fragAngle = 0;
+                    armorMultiplier = 0.4f;
                     fragBullet = new ShrapnelBulletType(){{
-                        toColor = Color.valueOf("FFE79E");
+                        toColor = Color.valueOf("B2E9FF");
                         lifetime = 18f;
                         serrationSpaceOffset = 40;
                         segmentScl = 12f;
                         length = 18f;
-                        damage = 25;
+                        damage = 8;
                         width = 8f;
                         hittable = false;
                         serrations = 2;
@@ -620,6 +630,130 @@ public class MD_UnitTypes {
             moveSoundVolume = 0.25f;
             moveSoundPitchMin = 0.7f;
             moveSoundPitchMax = 1.5f;
+        }};
+        pyrolume = new DepicilonUnitType("pyrolume"){{
+            //UnitTypes.obviate;
+            flying = true;
+            drag = 0.065f;
+            speed = 1.9f;
+            rotateSpeed = 2.4f;
+            accel = 0.04f;
+            health = 2100;
+            armor = 6f;
+            hitSize = 20f;
+            engineSize = 0;
+            engineOffset = 0;
+            itemCapacity = 60;
+            lowAltitude = false;
+            setEnginesMirror(
+                    new UnitEngine(3, -8, 2.5f, -45f),
+                    new UnitEngine(11, -8, 2f, -45f)
+            );
+            range = 20*8f;
+            weapons.addAll(
+                    new Weapon(this.name +"-weapon"){{
+                        x = 44/4f;
+                        y = -8/4f;
+                        layerOffset = -0.01f;
+                        reload = 80;
+                        mirror = true;
+                        shootCone = 5f;
+                        shootY = 3f;
+                        rotate = true;
+                        rotateSpeed = 1.5f;
+                        rotationLimit = 140f;
+                        shootSound = Sounds.shootOmura;
+                        shootSoundVolume = 0.8f;
+                        soundPitchMax = 1.3f;
+                        soundPitchMin = 1f;
+                        bullet = new RailBulletType(){{
+                            length = 20*8;
+                            damage = 450;
+                            trailColor = hitColor = Color.valueOf("D9FCFF");
+                            hitEffect = MD_Fx.spikeHitRotationSmall;
+                            pierceEffect = Fx.none;
+                            pierceDamageFactor = 0.2f;
+                            pointEffectSpace = 15f;
+                            smokeEffect = Fx.colorSpark;
+                            endEffect = new Effect(14f, e -> {
+                                color(e.color);
+                                Drawf.tri(e.x, e.y, e.fout() * 2.5f, 9f, e.rotation);
+                            });
+
+                            pointEffect = new Effect(15f,e->{
+                                color(e.color);
+                                for(int i : Mathf.signs){
+                                    Drawf.tri(e.x, e.y, 12+e.fin()*8f, 2.6f * e.fout(), e.rotation + i * 90);
+                                }
+                            });
+
+                            shootEffect = new Effect(10, e -> {
+                                color(e.color);
+                                float w = 1.2f + 7 * e.fout();
+
+                                Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+                                color(e.color);
+
+                                for(int i : Mathf.signs){
+                                    Drawf.tri(e.x, e.y, w * 0.9f, 30 * e.fout(), e.rotation + i * 60);
+                                }
+
+                                Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+                            });
+
+                            lineEffect = new Effect(20f,8*20, e -> {
+                                if(!(e.data instanceof Vec2 v)) return;
+
+                                color(e.color);
+                                stroke(e.fout() * 0.9f + 0.6f);
+
+                                Fx.rand.setSeed(e.id);
+                                for(int i = 0; i < 7; i++){
+                                    Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                                    Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                                }
+
+                                e.scaled(14f, b -> {
+                                    stroke(b.fout() * 2.5f);
+                                    color(e.color);
+                                    Lines.line(e.x, e.y, v.x, v.y);
+                                });
+                            });
+                        }};
+                    }},
+                    new Weapon(){{
+                        x=0;
+                        y=6f;
+                        shootY = 0;
+                        mirror = false;
+                        minWarmup = 0.8f;
+                        shootCone = 361f;
+                        reload = 150;
+                        shootSound = Sounds.shootMissilePlasma;
+                        shootSoundVolume = 1;
+                        parts.add(new HaloPart(){{
+                            sides = 24;
+                            radiusTo = 4f;
+                            haloRadius = 0;
+                            shapes = 1;
+                            radius = 0;
+                            layer = Layer.effect;
+                            color = Color.valueOf("D9FCFF");
+                            x=y=0;
+                            progress = PartProgress.warmup.mul(PartProgress.reload.inv()).delay(0.1f);
+                        }});
+                        bullet = new RefractedLaserBulletType(){{
+                            laserColor = Color.valueOf("85E0FF");
+                            setDefault(this);
+                            shootEffect = smokeEffect = Fx.none;
+                            emit = true;
+                            damage = 150;
+                            length = 20*8f;
+                            laserStrokeMulti = 0.7f;
+                            pierceCap = 5;
+                        }};
+                    }}
+            );
         }};
         burst = new DepicilonUnitType("burst"){{
 
@@ -706,7 +840,7 @@ public class MD_UnitTypes {
                             maxRange = 8*8f;
                             ignoreRotation = true;
 
-                            backColor =hitColor= Color.valueOf("FFF1B0");
+                            backColor =hitColor= Color.valueOf("B2E9FF");
                             frontColor = Color.white;
                             mixColorTo = Color.white;
 
@@ -756,7 +890,7 @@ public class MD_UnitTypes {
                                 lifetime = 27f;
                                 homingPower = 0.12f;
                                 homingRange = 30*8f;
-                                frontColor = trailColor = backColor = hitColor = Color.valueOf("FFF1B0");
+                                frontColor = trailColor = backColor = hitColor = Color.valueOf("B2E9FF");
                                 despawnEffect = hitEffect = MD_Fx.Mulitpleslash(20,2,hitColor,16,3f,4f);
                             }};
                         }
@@ -766,13 +900,13 @@ public class MD_UnitTypes {
                                 super.draw(b);
 
                                 float fin = (float) ((Math.sqrt(b.fin())-b.fin())*4f);
-                                Draw.color(Color.valueOf("FFD57A"));
+                                Draw.color(c);
                                 if(fin>0.05f){
                                     Drawff.prominence(b.id,b.x,b.y,20,12,fin*45,fin*12f,fin*10,6);
                                 }
                                 Fill.circle(b.x,b.y,fin*10);
                                 for(int o: Mathf.zeroOne) {
-                                    Draw.color(Color.valueOf("FFD57A"),Color.white,o*0.95f);
+                                    Draw.color(c,Color.white,o*0.95f);
                                     float scl = 1-o*0.4f;
                                     for (int i = 0; i < 3; i++) {
                                         Drawf.tri(b.x, b.y, scl*8 *fin, scl*80 *fin, i * 120 + Time.time*1.2f);
@@ -783,6 +917,7 @@ public class MD_UnitTypes {
                             }
                         };
                     }
+                        Color c = Color.valueOf("B2E9FF");
                         @Override
                         public void draw(Unit unit, WeaponMount mount) {
                             super.draw(unit, mount);
@@ -790,14 +925,14 @@ public class MD_UnitTypes {
                             float fin = (reload-mount.reload)/reload;
                             Draw.z(Layer.bullet+1f);
                             Tmp.v2.set(x,y).rotate(unit.rotation()-90);
-                            Draw.color(Color.valueOf("FFD57A"));
+                            Draw.color(c);
                             Fill.circle(unit.x +Tmp.v2.x,unit.y+Tmp.v2.y,fin*4.5f);
                             if(fin>0.1f)Drawff.prominence(
                                     unit.id,
                                     unit.x +Tmp.v2.x,unit.y+Tmp.v2.y,
                                     15,10,fin*5f,
                                     fin*5.5f,fin*4.5f,6);
-                            Draw.color(Color.valueOf("FFFBEB"));
+                            Draw.color(Color.white);
                             Fill.circle(unit.x +Tmp.v2.x,unit.y+Tmp.v2.y,fin*2.3f);
 
                             Draw.reset();
@@ -843,7 +978,7 @@ public class MD_UnitTypes {
                         rotationLimit = 361;
                         bullet = new BasicBulletType(22*8/60f,35,modname+"acicular-bullet"){{
                             homingPower = 0.02f;
-                            lightningColor = backColor = trailColor = hitColor = Color.valueOf("FFE3A6");
+                            lightningColor = backColor = trailColor = hitColor = Color.valueOf("B2E9FF");
                             lightningDamage = 20f;
                             lightning = 1;
                             lightningLength = 2;

@@ -13,7 +13,7 @@ import mindustry.content.Planets;
 import mindustry.world.meta.Env;
 
 public class MD_Planets {
-    public static Planet depicilon,test;
+    public static Planet depicilon;
     public static void load(){
         depicilon = new ExtendedPlanet("depicilon",Planets.sun,1f,3){{
             loadPlanetData = true;
@@ -33,8 +33,7 @@ public class MD_Planets {
             cloudMeshLoader = () -> new MultiMesh(
                     new HexSkyMesh(this, 48, 2.2f, 0.10f, 5, new Color().set(Color.valueOf("a8a040")).mul(0.9f).a(0.9f), 4, 0.40f, 1.3f, 0.40f),
                     new HexSkyMesh(this, 15, -1.3f, 0.16f, 5, new Color().set(Color.valueOf("a8a040")).mul(0.9f).a(0.80f), 3, 0.46f, 0.9f, 0.35f),
-                    new HexSkyMesh(this, 25, 0.5f, 0.24f, 5, Color.white.cpy().lerp(Color.valueOf("a8a040"), 0.55f).a(0.75f), 5, 0.43f, 0.8f, 0.4f),
-                    new HexSkyMesh(this, 25, -5f, 0.32f, 5, Color.white.cpy().lerp(Color.valueOf("a8a040"), 0.55f).a(0.50f), 5, 0.41f, 1.2f, 0.22f)
+                    new HexSkyMesh(this, 25, -5f, 0.22f, 5, Color.white.cpy().lerp(Color.valueOf("a8a040"), 0.55f).a(0.50f), 5, 0.41f, 1.2f, 0.22f)
             );
             launchCapacityMultiplier = 0.15f;
             sectorSeed = 1145;

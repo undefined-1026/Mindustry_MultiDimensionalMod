@@ -11,6 +11,7 @@ import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
 import static mindustry.game.Objectives.*;
 
+import mindustry.content.Items;
 import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Objectives;
@@ -27,14 +28,6 @@ public class MD_TechTree {
 
     public static void load(){
         MD_Planets.depicilon.techTree = nodeRoot("depicilon", MD_blocks.coreSteady,()->{
-            node(silicon_reaction_furnace,()->{
-                node(MD_blocks.al_alloy_smelting,()->{
-                    node(ammonia_chamber,Seq.with(new Objectives.OnSector(marginal_outpost)),()->{
-                        node(polymer_compressor);
-                    });
-                });
-            });
-
             node(MD_blocks.light_duct,()->{
                 node(MD_blocks.armored_light_duct,()->{
                     node(MD_blocks.stack_rail_conveyor);
@@ -53,6 +46,20 @@ public class MD_TechTree {
                 node(proof_container,()->{
                     node(stack);
                     node(moving_node,Seq.with(new Objectives.SectorComplete(marginal_outpost)));
+                });
+            });
+            node(silicon_reaction_furnace,()->{
+                node(MD_blocks.al_alloy_smelting,()->{
+                    node(ammonia_chamber,Seq.with(new Objectives.OnSector(marginal_outpost)),()->{
+                        node(polymer_compressor);
+                    });
+                });
+                node(light_ceramic_wrapper,()->{
+                    node(infrared_laser,()-> {
+                        node(beam_merging_prism,()->{
+                            node(diagonal_beam_merging_prism);
+                        });
+                    });
                 });
             });
             node(fluid_conduit,Seq.with(new Research(ammonia)),()->{
@@ -99,12 +106,10 @@ public class MD_TechTree {
 
 
             nodeProduce(sand,()->{
-                nodeProduce(bauxite,()->{
-                    nodeProduce(aluminium,()->{
-                        nodeProduce(silicon,()->{
-                            nodeProduce(al_alloy,()->{
-                                nodeProduce(polymer);
-                            });
+                nodeProduce(aluminium,()->{
+                    nodeProduce(silicon,()->{
+                        nodeProduce(al_alloy,()->{
+                            nodeProduce(polymer);
                         });
                     });
                 });
@@ -123,17 +128,29 @@ public class MD_TechTree {
                     nodeProduce(nitrogen);
                 });
             });
-            node(infantry_factory,Seq.with(new SectorComplete(starting_point)),()->{
-                node(airborne_vessels_factory,()->{
-                    node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
-                        node(firefly,ItemStack.with(polymer,1200,silicon,1200,al_alloy,1200),()->{});
-                        node(lumen,ItemStack.with(germanium,150,silicon,200),()->{});
-                    });
+            nodeProduce(MD_beams.near_infrared_light,()->{
+                nodeProduce(MD_beams.bright_light);
+            });
+            node(eigen_factory,Seq.with(new SectorComplete(starting_point)),()->{
+                node(phase_factory,()->{
+                    node(lumen,ItemStack.with(germanium,150,silicon,200),()->{});
                 });
 
                 node(captive,ItemStack.with(),()->{
                     node(zircon,ItemStack.with(silicon,2000,al_alloy,2000),()->{});
-                    node(mouse,ItemStack.with(silicon,2500,germanium,2500,graphite,2500),()->{});
+                    node(mouse,ItemStack.with(silicon,2500,germanium,2500,graphite,2500),()->{
+                        node(coyote);
+                    });
+                });
+                node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
+                    node(firefly,ItemStack.with(polymer,1200,silicon,1200,al_alloy,1200),()->{
+                        node(pyrolume,
+                                ItemStack.with(silicon,12000,titanium,8000,light_ceramic,4000,al_alloy,6000),
+                                Seq.with(new Research(titanium)),
+                                ()->{
+
+                        });
+                    });
                 });
 
                 node(eigen_unit_assembler);
@@ -142,12 +159,12 @@ public class MD_TechTree {
             node(starting_point,()->{
                 node(marginal_outpost,Seq.with(
                         new SectorComplete(starting_point),
-                        new Research(infantry_factory),
+                        new Research(eigen_factory),
                         new Research(al_alloy)),()->{
-                    node(crystallization_oil_rift,Seq.with(
+                    node(halo_canyon,Seq.with(
                             new SectorComplete(marginal_outpost),
                             new Research(ammonia_collector),
-                            new Research(shaping_assembler)
+                            new Research(grudge)
                     ));
 
                 });

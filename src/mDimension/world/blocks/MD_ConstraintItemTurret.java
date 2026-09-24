@@ -8,6 +8,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Building;
+import mindustry.gen.Teamc;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
@@ -86,6 +87,14 @@ public class MD_ConstraintItemTurret extends ItemTurret {
             }
         }
 
+        @Override
+        public int acceptStack(Item item, int amount, Teamc source){
+            BulletType type = ammoTypes.get(item);
+
+            if(type == null) return 0;
+
+            return Math.min((int)((maxAmmo - totalAmmo) / ammoTypes.get(item).ammoMultiplier), 1);
+        }
         @Override
         public void updateTile(){
             if(loadProgress<loadingAmmoTime && loadingAmmoTime>0)loadProgress+=delta()*(!isShooting&& shutDownLoadingSpeedBoost>0?shutDownLoadingSpeedBoost+1f:1f);

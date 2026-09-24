@@ -15,7 +15,7 @@ import static mindustry.Vars.tilesize;
 public class MD_MobileInput extends MobileInput {
     @Override
     public void drawArrow(Block block, int x, int y, int rotation, boolean valid) {
-        if(block instanceof Slant) {
+        if(block instanceof Slant s&& s.isSlant()) {
             float trns = (block.size / 2) * tilesize;
             int dx = Geometry.d8edge(rotation).x, dy = Geometry.d8edge(rotation).y;
             float offsetx = x * tilesize + block.offset + dx*trns;

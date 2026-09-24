@@ -1,5 +1,6 @@
 package mDimension.entity;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.math.geom.Position;
@@ -9,6 +10,7 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mDimension.MDimensionMod;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.content.MD_beams;
 import mDimension.world.beam.BeamBlock;
@@ -146,11 +148,11 @@ public class BeamEntity implements Entityc, Drawc {
     }
 
 
-
     @Override
     public void draw() {
+        float a = (Core.settings.getInt(MDimensionMod.BEAM_OPACITY,80)/100f);
         Draw.mixcol(laser.toColor,(scl-1) * 2.5f);
-        if(warmup>0.01f)laser.beamDrawer.get(this);
+        if(warmup>0.01f)laser.beamDrawer.get(this,a);
         Draw.reset();
     }
 

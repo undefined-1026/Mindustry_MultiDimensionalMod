@@ -14,6 +14,7 @@ import arc.util.Tmp;
 import arc.util.noise.Simplex;
 import mindustry.graphics.g3d.PlanetParams;
 import mindustry.type.Planet;
+import mindustry.type.Sector;
 
 /**
  * 可扩展星球基类 —— 支持星环、极光、能量护盾及任意自定义绘制。
@@ -82,6 +83,7 @@ public class ExtendedPlanet extends Planet {
     public ExtendedPlanet(String name, Planet parent, float radius, int sectorSize) {
         super(name, parent, radius, sectorSize);
     }
+
 
     @Override
     public void draw(PlanetParams params, Mat3D projection, Mat3D transform) {

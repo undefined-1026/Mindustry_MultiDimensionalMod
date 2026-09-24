@@ -79,58 +79,62 @@ public class Beam extends UnlockableContent implements Senseable {
     public void setStats() {
         stats.add(MD_Stat.energyLevel,energyLevel);
     }
-    public Cons<BeamEntity> beamDrawer= l->{
+    public Cons2<BeamEntity,Float> beamDrawer= (l,a)->{
         basicDraw(l,(last,now)->{
             float scl = l.scl*1.15f;
             float z = Draw.z();
-            Draw.color(color,0.2f);
+            Draw.color(color,0.2f*a);
             Lines.stroke(5*scl);
             Lines.line(last.x,last.y,now.x,now.y,false);
             Draw.z(z+0.001f);
             Draw.color(color,Color.white,0.2f);
+            Draw.alpha(a);
             Lines.stroke(3*scl);
             Lines.line(last.x,last.y,now.x,now.y,false);
             Draw.z(z+0.002f);
-            Draw.color(Color.white);
-            Lines.stroke(1f*scl);
+            Draw.color(Color.white,a);
+            Lines.stroke(scl);
             Lines.line(last.x,last.y,now.x,now.y,false);
             Draw.z(z);
         },v->{
             float scl = l.scl*0.5f*1.15f;
 
-            Draw.color(color,0.2f);
+            Draw.color(color,0.2f*a);
             Fill.circle(v.x,v.y,5*scl);
 
             Draw.color(color,Color.white,0.2f);
+            Draw.alpha(a);
             Fill.circle(v.x,v.y,3*scl);
 
-            Draw.color(Color.white);
+            Draw.color(Color.white,a);
             Fill.circle(v.x,v.y,scl);
         },v->{
             float scl = l.scl*0.5f;
             float z = Draw.z();
-            Draw.color(color,0.2f);
+            Draw.color(color,0.2f*a);
             Fill.circle(v.x,v.y,7f*scl);
             Draw.z(z+0.001f);
             Draw.color(color,Color.white,0.2f);
+            Draw.alpha(a);
             Fill.circle(v.x,v.y,5f*scl);
             Draw.z(z+0.002f);
-            Draw.color(Color.white);
+            Draw.color(Color.white,a);
             Fill.circle(v.x,v.y,2f*scl);
             Draw.z(z);
         },(v,rot)->{
             float scl = l.scl*1.15f;
             float dst = 6f;
-            Draw.color(color,0.2f);
+            Draw.color(color,0.2f*a);
             Lines.stroke(5*scl);
             MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
 
             Draw.color(color,Color.white,0.2f);
+            Draw.alpha(a);
             Lines.stroke(3*scl);
             MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
 
-            Draw.color(Color.white);
-            Lines.stroke(1f*scl);
+            Draw.color(Color.white,a);
+            Lines.stroke(scl);
             MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
         });
     };

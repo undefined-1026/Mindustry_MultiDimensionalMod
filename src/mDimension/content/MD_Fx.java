@@ -338,6 +338,15 @@ public class MD_Fx {
                     Drawf.tri(e.x, e.y, (len / 20 + 7) * e.foutpowdown(), len * (e.fout() + 2) / 3, rot);
                 });
             }),
+            spikeHitSmall = new Effect(40f, 130f, e -> {
+                color(e.color);
+                randLenVectors(e.id, 7, 10, 20, (x, y) -> {
+                    float rot = Mathf.angle(x, y);
+                    float len = Mathf.len(x, y);
+
+                    Drawf.tri(e.x, e.y, (len / 15 + 5) * e.foutpowdown(), len * (e.fout() + 2) / 3, rot);
+                });
+            }),
             spikeHitRotation = new Effect(35f, 100f, e -> {
                 color(e.color);
                 rand.setSeed(e.id);
@@ -346,6 +355,20 @@ public class MD_Fx {
                     float rot = Mathf.angle(v.x, v.y);
                     float len = Mathf.len(v.x, v.y);
                     float len2 = len * len * 0.15f;
+                    Drawf.tri(e.x + v.x, e.y + v.y,
+                            len * 0.5f * e.foutpowdown(), len2 * (e.foutpowdown() + 2) / 3, rot);
+                    Drawf.tri(e.x + v.x, e.y + v.y,
+                            len * 0.5f * e.foutpowdown(), len2 * (e.foutpowdown() + 2) * 0.25f / 3, rot + 180f);
+                }
+            }),
+            spikeHitRotationSmall = new Effect(35f, 100f, e -> {
+                color(e.color);
+                rand.setSeed(e.id);
+                for (int i = 0; i < 5; i++) {
+                    v.trns(e.rotation + rand.range(25), rand.random(10) + 3);
+                    float rot = Mathf.angle(v.x, v.y);
+                    float len = Mathf.len(v.x, v.y);
+                    float len2 = len * len * 0.17f;
                     Drawf.tri(e.x + v.x, e.y + v.y,
                             len * 0.5f * e.foutpowdown(), len2 * (e.foutpowdown() + 2) / 3, rot);
                     Drawf.tri(e.x + v.x, e.y + v.y,
@@ -482,15 +505,16 @@ public class MD_Fx {
     }),
 
 
-    RefractedLaser = new Effect(20f,e->{
-        if(e.data instanceof Healthc[] targets){
+    RefractedLaser = new Effect(20f,50*8,e->{
+        if(e.data instanceof Posc[] targets){
+            rand.setSeed(e.id);
             v.set(e.x,e.y);
-            float fout = e.fout();
+            float fout = e.fout() * (e.rotation<=0.01f?1f:e.rotation);
             float stroke;
 
             for(int i=0;i<targets.length;i++){
                 var t = targets[i];
-                v1.set(t.x(),t.y());
+                v1.set(t.x(),t.y()).add(v2.trns(rand.random(360),rand.random(3f)));;
                 stroke = fout*7f;
 
                 color(e.color,0.3f);
@@ -511,8 +535,8 @@ public class MD_Fx {
                 Fill.circle(v.x,v.y,stroke * 1.15f);
                 Lines.stroke(stroke);
                 Lines.line(v.x,v.y,v1.x,v1.y,false);
+                v.set(v1);
 
-                v.set(t.x(),t.y());
             }
             stroke = fout * 7f;
             color(e.color,0.3f);

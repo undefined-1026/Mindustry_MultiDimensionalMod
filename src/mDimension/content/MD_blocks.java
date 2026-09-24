@@ -77,7 +77,6 @@ import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.blocks.units.UnitFactory;
 import mindustry.world.consumers.ConsumeCoolant;
-import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
@@ -89,7 +88,11 @@ public class MD_blocks {
     public static final String modname = "mdimension-";
     //region defined
     public static Block
-            small_silicon_arc_furnace,silicon_reaction_furnace, aluminium_electrolysis_cell, al_alloy_smelting, infrared_laser, ultraviolet_laser, nihility_exciter, ngm_launch_pad,
+            small_silicon_arc_furnace,silicon_reaction_furnace, aluminium_electrolysis_cell, al_alloy_smelting,
+
+    infrared_laser, ultraviolet_laser,bright_light_laser, nihility_exciter,
+
+    ngm_launch_pad,
             ti_alloy_smelting, helium_factory, test2, diagonal_beam_merging_prism,light_ceramic_wrapper,
             water_pyrolyzer, carbon_fibre_binder, heavy_pulverizer, polymer_compressor, phase_adder, ammonia_chamber,
     //distribution
@@ -121,7 +124,7 @@ public class MD_blocks {
             small_payload_router,payload_processing_platform,
             test3,ammo_constructor,
     //unit
-    infantry_factory,airborne_vessels_factory,
+    eigen_factory, phase_factory,
 
     shaping_assembler,
             eigen_unit_assembler,
@@ -144,7 +147,6 @@ public class MD_blocks {
             ));
             researchCostMultiplier = 0.05f;
             itemCapacity = 20;
-
             consumeItem(Items.sand, 3);
             outputItem = new ItemStack(Items.silicon, 2);
             craftTime = 60f;
@@ -171,6 +173,7 @@ public class MD_blocks {
             requirements(Category.crafting, with(MD_Items.aluminium, 60, Items.graphite, 50 , MD_Items.germanium,50));
             craftTime = 120f;
             itemCapacity = 30;
+            liquidCapacity = 100f;
             consumePower(3f);
             size = 3;
             researchCost = with(MD_Items.aluminium, 60, Items.graphite, 50 , MD_Items.germanium,50);
@@ -281,6 +284,7 @@ public class MD_blocks {
             consume(new ConsumeBeam(30, MD_beams.near_infrared_light));
             craftTime = 80f;
             itemCapacity = 30;
+            liquidCapacity = 100f;
             consumeItems(ItemStack.with(Items.silicon, 3, Items.titanium, 12));
             consumeLiquid(MD_Liquids.helium, 1.45f / 60f);
             outputItem = new ItemStack(MD_Items.ti_alloy, 4);
@@ -319,6 +323,7 @@ public class MD_blocks {
             health = 500;
             armor = 3;
             buildTime = 3f;
+            liquidCapacity = 100f;
             consumeLiquid(Liquids.hydrogen, 6 / 60f);
             consumeItem(Items.phaseFabric, 1);
             craftTime = 240f;
@@ -503,7 +508,7 @@ public class MD_blocks {
         //endregion
         //region infrared_laser 激光发生器
         infrared_laser = new LaserCrafter("infrared-laser") {{
-            requirements(Category.crafting, with());
+            requirements(Category.crafting, with(Items.silicon,30,MD_Items.germanium,50));
             craftPos = new Vec2[]{
                     new Vec2(4, -4),
                     new Vec2(-4, 4)
@@ -517,8 +522,6 @@ public class MD_blocks {
             beam = MD_beams.near_infrared_light;
             size = 2;
             beamPower = 10f;
-            rotateDraw = false;
-            drawArrow = true;
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
         ultraviolet_laser = new LaserCrafter("ultraviolet-laser") {{
@@ -536,10 +539,28 @@ public class MD_blocks {
             beam = MD_beams.ultraviolet_light;
             size = 2;
             beamPower = 6f;
-            rotateDraw = false;
-            drawArrow = true;
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
+        bright_light_laser = new LaserCrafter("bright-light-laser") {{
+            requirements(Category.crafting, with(Items.silicon,50,MD_Items.light_ceramic,15,MD_Items.germanium,80));
+            craftPos = new Vec2[]{
+                    new Vec2(4, -4),
+                    new Vec2(-4, 4)
+            };
+            craftRotation = new Vec2[]{
+                    new Vec2(1, 1),
+                    new Vec2(1, 1)
+            };
+            consumePower(1f);
+            craftTime = 240f;
+            consumeItem(MD_Items.light_ceramic);
+            diagonalFilp = true;
+            beam = MD_beams.bright_light;
+            size = 2;
+            beamPower = 10f;
+            drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
+        }};
+
         nihility_exciter = new LaserCrafter("nihility-exciter") {{
             requirements(Category.crafting, with());
             craftPos = new Vec2[]{
@@ -1169,7 +1190,7 @@ public class MD_blocks {
         }};
 
         fluid_container = new LiquidRouter("fluid-container"){{
-            requirements(Category.liquid, with(Items.titanium, 10, Items.metaglass, 15));
+            requirements(Category.liquid, with(Items.graphite,20,MD_Items.germanium,20));
             liquidCapacity = 700f;
             size = 2;
             solid = true;
@@ -2809,11 +2830,12 @@ public class MD_blocks {
             filter = Seq.with(MD_blocks.heavy_ammo);
 
         }};
-        infantry_factory = new UnitFactory("infantry-factory"){{
+        eigen_factory = new UnitFactory("infantry-factory"){{
             requirements(Category.units, with(Items.silicon, 150, MD_Items.aluminium, 180, Items.graphite, 120));
             plans = Seq.with(
                     new UnitPlan(MD_UnitTypes.captive, 60f * 30, with(Items.silicon, 50, MD_Items.aluminium,55)),
-                    new UnitPlan(MD_UnitTypes.mouse, 60f * 38, with(Items.silicon, 70, MD_Items.germanium,40, MD_Items.al_alloy,30))
+                    new UnitPlan(MD_UnitTypes.mouse, 60f * 38, with(Items.silicon, 70, MD_Items.germanium,40, MD_Items.al_alloy,30)),
+                    new UnitPlan(MD_UnitTypes.shimmer, 60f * 28, with(Items.silicon, 45, MD_Items.polymer,70))
             );
             size = 3;
             regionSuffix = "-ammo";
@@ -2821,10 +2843,9 @@ public class MD_blocks {
             researchCost = with(Items.silicon, 100, MD_Items.aluminium, 120, Items.graphite, 80);
         }};
 
-        airborne_vessels_factory = new UnitFactory("airborne-vessels-factory"){{
+        phase_factory = new UnitFactory("airborne-vessels-factory"){{
             requirements(Category.units, with(Items.silicon, 170, MD_Items.polymer, 150, MD_Items.germanium, 120));
             plans = Seq.with(
-                    new UnitPlan(MD_UnitTypes.shimmer, 60f * 28, with(Items.silicon, 45, MD_Items.polymer,70)),
                     new UnitPlan(MD_UnitTypes.lumen, 60f * 25, with(Items.silicon, 60,MD_Items.germanium,70))
             );
             size = 3;
@@ -2900,7 +2921,7 @@ public class MD_blocks {
         }};
 
         shaping_assembler = new PayloadPlatformConstructor("shaping-assembler"){{
-            requirements(Category.units, with(Items.silicon,120, MD_Items.al_alloy,80));
+            requirements(Category.units,BuildVisibility.sandboxOnly, with(Items.silicon,120, MD_Items.al_alloy,80));
             size = 2;
             consumeItems(with(Items.silicon,2, MD_Items.al_alloy,1));
             consumePower(1.5f);

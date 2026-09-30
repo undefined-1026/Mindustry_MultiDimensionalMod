@@ -93,10 +93,10 @@ public class MD_blocks {
     infrared_laser, ultraviolet_laser,bright_light_laser, nihility_exciter,
 
     ngm_launch_pad,
-            ti_alloy_smelting, helium_factory, test2, diagonal_beam_merging_prism,light_ceramic_wrapper,
+            ti_alloy_smelting, helium_factory, test2, beam_merging_prism,diagonal_beam_merging_prism,light_ceramic_wrapper,
             water_pyrolyzer, carbon_fibre_binder, heavy_pulverizer, polymer_compressor, phase_adder, ammonia_chamber,
     //distribution
-    beam_merging_prism, light_junction,
+    light_junction,
             multiway_unloader, light_duct_bridge, shunt_router,
             light_sorter, light_invertedSorter, light_overflowGate, light_underflowGate, light_duct, armored_light_duct, stack_rail_conveyor,
 
@@ -280,13 +280,13 @@ public class MD_blocks {
             armor = 3;
             size = 4;
             buildTime = 6f;
-            consume(new ConsumeBeam(6, MD_beams.ultraviolet_light));
-            consume(new ConsumeBeam(30, MD_beams.near_infrared_light));
+            consume(new ConsumeBeam(20, MD_beams.bright_light));
+            consume(new ConsumeBeam(20, MD_beams.near_infrared_light));
             craftTime = 80f;
             itemCapacity = 30;
             liquidCapacity = 100f;
             consumeItems(ItemStack.with(Items.silicon, 3, Items.titanium, 12));
-            consumeLiquid(MD_Liquids.helium, 1.45f / 60f);
+            consumeLiquid(MD_Liquids.helium, 3f / 60f);
             outputItem = new ItemStack(MD_Items.ti_alloy, 4);
             hasItems = true;
             hasPower = true;
@@ -325,7 +325,7 @@ public class MD_blocks {
             buildTime = 3f;
             liquidCapacity = 100f;
             consumeLiquid(Liquids.hydrogen, 6 / 60f);
-            consumeItem(Items.phaseFabric, 1);
+            consume(new ConsumeBeam(5f,MD_beams.bright_light));
             craftTime = 240f;
             size = 2;
 
@@ -401,7 +401,7 @@ public class MD_blocks {
             drawArrow = true;
             drawer = new DrawMulti(
                     new DrawRegion(),
-                    new DrawRotation("-arrow", 4)
+                    new DrawRotation("-arrow", true)
             );
         }};
 
@@ -552,7 +552,7 @@ public class MD_blocks {
                     new Vec2(1, 1)
             };
             consumePower(1f);
-            craftTime = 240f;
+            craftTime = 330;
             consumeItem(MD_Items.light_ceramic);
             diagonalFilp = true;
             beam = MD_beams.bright_light;

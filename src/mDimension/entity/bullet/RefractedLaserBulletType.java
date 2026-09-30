@@ -83,7 +83,7 @@ public class RefractedLaserBulletType extends BulletType {
 
             Units.nearbyEnemies(b.team, nodePos.x, nodePos.y, refractedRadius, u -> {
                 float udst = u.dst2(nodePos) * (b.collided.contains(u.id) ? 2 : 1);
-                if (!u.dead && u.canTarget(b) && (udst < dst || dst < 0) && u != node && (repeatedHit || !b.hasCollided(u.id))) {
+                if (!u.dead && u.targetable(b.team) && (udst * (b.collided.contains(u.id) ? 2 : 1) < dst || dst < 0) && u != node && (repeatedHit || !b.hasCollided(u.id))) {
                     dst = udst;
                     target = u;
                 }
@@ -92,8 +92,8 @@ public class RefractedLaserBulletType extends BulletType {
             if (target == null) {
                 dst = -1;
                 Units.nearbyBuildings(nodePos.x, nodePos.y, refractedRadius, u -> {
-                    float udst = u.dst2(nodePos) * (b.collided.contains(u.id) ? 2 : 1);
-                    if (b.team != u.team && !u.dead && (udst < dst || dst < 0) && u != node && (repeatedHit || !b.hasCollided(u.id))) {
+                    float udst = u.dst2(nodePos);
+                    if (b.team != u.team && !u.dead && (udst * (b.collided.contains(u.id) ? 2 : 1) < dst || dst < 0) && u != node && (repeatedHit || !b.hasCollided(u.id))) {
                         dst = udst;
                         target = u;
                         b.collided.add(u.id);

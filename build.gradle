@@ -5,7 +5,7 @@
 
 apply plugin: "java"
 
-version = 'v0.1.3'
+version = 'v0.2.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -76,14 +76,14 @@ tasks.register('jarAndroid'){
 
         //dex and desugar files - this requires d8 in your PATH
         // 修复：输入文件名加上 ${version}，与 jar 任务保持一致
-        "$d8 $dependencies --min-api 14 --output ${project.name}Android.jar ${project.name}Desktop${version}.jar"
+        "$d8 $dependencies --min-api 14 --output ${project.name}Android.jar ${project.name}Desktop[${version}].jar"
                 .execute(null, new File("build/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
 
 jar{
     // 修复：使用 .set() 并保留 version
-    archiveFileName.set("${project.name}Desktop${version}.jar")
+    archiveFileName.set("${project.name}Desktop[${version}].jar")
 
     from{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
@@ -102,10 +102,10 @@ jar{
 tasks.register('deploy', Jar){
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName.set("${project.name}-${version}.jar")
+    archiveFileName.set("${project.name}[${version}].jar")
 
     // 修复：分开写 from，引用带 version 的 Desktop jar
-    from(zipTree("build/libs/${project.name}Desktop${version}.jar"))
+    from(zipTree("build/libs/${project.name}Desktop[${version}].jar"))
     from(zipTree("build/libs/${project.name}Android.jar"))
 
     doLast{

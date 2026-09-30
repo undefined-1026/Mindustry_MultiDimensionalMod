@@ -59,6 +59,7 @@ public class MD_TechTree {
                         node(beam_merging_prism,()->{
                             node(diagonal_beam_merging_prism);
                         });
+                        node(bright_light_laser,Seq.with(new Research(light_ceramic)));
                     });
                 });
             });

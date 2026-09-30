@@ -14,6 +14,7 @@ import mDimension.ai.SeedingAI;
 import mDimension.ai.TransportAI;
 import mDimension.entity.ability.AccelerateAbility;
 import mDimension.entity.ability.PatienceAbility;
+import mDimension.entity.ability.RepairBuildFieldAbility;
 import mDimension.entity.bullet.BallLightningBulletType;
 import mDimension.entity.bullet.RefractedLaserBulletType;
 import mDimension.tool.Drawff;
@@ -24,18 +25,14 @@ import mDimension.world.weapons.DestoryWeapon;
 import mDimension.world.weapons.OverdriveWeapon;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
-import mindustry.ai.types.CargoAI;
 import mindustry.ai.types.FlyingFollowAI;
-import mindustry.content.Blocks;
 import mindustry.content.Fx;
-import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.HaloPart;
-import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootBarrel;
 import mindustry.entities.pattern.ShootHelix;
@@ -46,7 +43,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-
+import mDimension.entity.ability.*;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static mDimension.content.MD_blocks.setDefault;
@@ -54,14 +51,14 @@ import static mindustry.Vars.tilesize;
 
 import static mDimension.content.MD_blocks.modname;
 import mDimension.world.weapons.*;
-import mindustry.type.unit.ErekirUnitType;
+import mindustry.type.weapons.PointDefenseWeapon;
 
 public class MD_UnitTypes {
 
-    public static UnitType captive , zircon;
+    public static UnitType captive , zircon,sin;
     public static UnitType mouse,coyote;
     public static UnitType shimmer , firefly,pyrolume,burst;
-    public static UnitType lumen,floating;
+    public static UnitType lumen,mist,floating;
     //coreUnit
     public static UnitType primitive;
 
@@ -267,7 +264,84 @@ public class MD_UnitTypes {
                     }}
             );
         }};
-
+        sin = new DepicilonUnitType("sin"){{
+            constructor = LegsUnit::create;
+            legCount = 4;
+            legLength = 10f;
+            legLengthScl = 1.2f;
+            legBaseOffset = 0.1f;
+            legForwardScl = 0.3f;
+            legExtension = 3;
+            legStraightness = 0.2f;
+            health = 3500f;
+            armor = 10;
+            speed = 3.4f/7.5f;
+            weapons.addAll(new GatlingWeapon(this.name+"-weapon"){{
+                x = 49/4f;
+                y = -6/4f;
+                top = false;
+                bx = -0.5f/4f;
+                by = 29/4f;
+                width = 9/4f;
+                inclineRotation = -37f;
+                mirror = true;
+                rotate = true;
+                rotationLimit = 16;
+                rotateSpeed = 1f;
+                shootCone = 80;
+                recoils = 4;
+                reload = 3;
+                shootWarmupSpeed = 0.025f;
+                shootY = 48/4f;
+                shootX = -3.5f/4f;
+                hitSize = 18;
+                shootSoundVolume = 1f;
+                shootSound = Sounds.shootReign;
+                soundPitchMax = 1.1f;soundPitchMin = 0.85f;
+                shoot.shots = 1;
+                overheatSpeed = 0.02f;
+                overheatDurationTime = 5*60f;
+                targetInterval = 0;
+                targetSwitchInterval = 0;
+                inversion = true;
+                bullet = new BasicBulletType(12,25){{
+                    setDefault(this);
+                    width = 7f;
+                    height = 11f;
+                    pierce = true;
+                    pierceCap = 2;
+                    height = 7f;
+                    shrinkX = 0.2f;
+                    shrinkY = 0f;
+                    backColor = lightningColor = trailColor = hitColor = Color.valueOf("D0C2FF");
+                    trailLength = 5;
+                    trailWidth = 1.3f;
+                    lifetime = 18.66f;
+                    splashDamageRadius = 12f;
+                    splashDamage = 20;
+                    armorMultiplier = 0.5f;
+                    lightningDamage = 10;
+                    lightning = 1;
+                    lightningLength = 5;
+                    lightningCone = 15;
+                }};
+                inaccuracy = 2;
+            }},new PointDefenseWeapon(this.name+"-point-weapon"){{
+                x = 24/4f;
+                y = -28/4f;
+                reload = 5;
+                color = Color.valueOf("D0C2FF");
+                rotateSpeed = 35f;
+                targetInterval = 8f;
+                targetSwitchInterval = 8f;
+                bullet = new BulletType(){{
+                    shootEffect = Fx.sparkShoot;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 12*8;
+                    damage = 35;
+                }};
+            }});
+        }};
         mouse = new DepicilonUnitType.DepicilonTankUnitType("mouse"){{
             //UnitTypes.stell;
             hitSize = 11f;
@@ -1069,7 +1143,42 @@ public class MD_UnitTypes {
                     }}
             );
         }};
+        mist = new DepicilonUnitType("mist"){{
+            defaultCommand = UnitCommand.repairCommand;
+            aiController = FlyingFollowAI::new;
+            canHeal = true;
+            hovering = true;
+            flying = true;
+            lowAltitude = false;
+            shadowElevation = 0.1f;
+            softShadowScl = 0.7f;
 
+            drag = 0.08f;
+            speed = 1.5f;
+            rotateSpeed = 10f;
+
+            accel = 0.13f;
+
+            health = 1200;
+            armor = 4f;
+            hitSize = 11;
+
+            engineSize = 2.5f;
+            engineOffset = 5.2f;
+            itemCapacity = 40;
+            range = 8*8f;
+            abilities.addAll(
+                    new StatusFieldAbility(MD_StatusEffects.bless, 6*60, 5*60,8*8f){{color = Pal.heal;}},
+                    new ShieldRegenFieldAbility(20,200,60f,8*60f){{activeEffect = Fx.none;}},
+                    new RepairBuildFieldAbility(120,8*12,60),
+                    new PersonalShieldAbility(400,20/60f)
+            );
+            weapons.add(new Weapon(){{
+                display = false;
+                noAttack = true;
+                bullet = new BulletType(){{healAmount = 1f;}};
+            }protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation) {}});
+        }};
         floating = new DepicilonUnitType("floating"){{
             defaultCommand = UnitCommand.assistCommand;
             buildSpeed = 0.5f;

@@ -91,8 +91,10 @@ public class LiquidUnloader extends Block {
             float amount = amount();
 
             Building back = back();
+            Building front = front();
             if(sortLiquid != null&&back != null
             &&back.block.hasLiquids && back.liquids.get(sortLiquid)>0.1f && back.canUnload()
+                    &&front.liquids.get(sortLiquid)<back.liquids.get(sortLiquid)
             && this.liquids.get(sortLiquid)<block.liquidCapacity-0.1f){
                 pullLiquid(back,Math.min(back.liquids.get(sortLiquid) /2,amount),sortLiquid);
 

@@ -11,6 +11,7 @@ import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
+import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
@@ -139,7 +140,7 @@ public class MD_StatusEffects {
 
         bless = new MD_complexStatusEffect("bless"){{
             color = Color.valueOf("ffffff");
-            percentageDamage = -0.05f/60f;
+            percentageDamage = -0.02f/60f;
             damage = -50/60f;
             damageMultiplier = 1.15f;
             healthMultiplier = 1.2f;
@@ -147,10 +148,17 @@ public class MD_StatusEffects {
             reloadMultiplier = 1.1f;
             armorAdditional = 3;
             armorMultiplier = 1.15f;
-            effectChance = 0.10f;
-            act = e->{
-                effect = MD_Fx.polygonalStar(40f,2,Color.valueOf("EDFFE0"),0.8f*e.hitSize,5f,90f);
-            };
+            effectChance = 0.05f;
+            parentizeEffect = true;
+            effect = new Effect(25f,e->{
+                if(e.data instanceof Unit u){
+                    Draw.color(Color.valueOf("D7FFBA"));
+                    float scl = u.hitSize/8f * e.fout();
+                    for(int i:Mathf.signs){
+                        Drawf.tri(e.x,e.y,scl*1.2f,scl * 9f,i*90);
+                    }
+                }
+            }).followParent(false);
         }};
 
 

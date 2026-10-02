@@ -127,10 +127,12 @@ public class MD_blocks {
     eigen_factory, phase_factory,
 
     shaping_assembler,
-            eigen_unit_assembler,
+            eigen_unit_assembler, airborne_unit_assembler,
             forging_assembler,
             tempering_assembler,
             polarization_assembler,
+
+    sharpen_assembler_module,
 
     anchor_radar,
             army_anchor_point_reconstructor,
@@ -2664,7 +2666,6 @@ public class MD_blocks {
             lightningDamage = 50f;
             unitCapModifier = 15;
             size = 4;
-            fullOverride = this.name + "-private";
         }};
 
         coreEngineering = new MD_SpawnUnitCoreBlock("core-engineering"){{
@@ -2684,7 +2685,6 @@ public class MD_blocks {
             thrusterLength = 34f/4f;
             unitCapModifier = 12;
             size = 4;
-            fullOverride = this.name + "-private";
         }};
 
         proof_container = new StorageBlock("proof-container"){{
@@ -2741,7 +2741,6 @@ public class MD_blocks {
             underBullets = true;
             crushFragile = true;
             solid = false;
-            researchCost = with( MD_Items.aluminium, 10);
             enableDrawStatus = false;
             buildCostMultiplier = 0.5f;
             size=2;
@@ -2912,12 +2911,52 @@ public class MD_blocks {
                     new AssemblerUnitPlan(MD_UnitTypes.firefly, 60f * 35, PayloadStack.list(MD_UnitTypes.shimmer,1)){{
                         itemReq = with(Items.silicon,70,MD_Items.polymer,40);
                     }}
+            );
+            plans.add(
+                    setTier(1
+                            ,new AssemblerUnitPlan(MD_UnitTypes.sin, 60f * 48, PayloadStack.list(MD_UnitTypes.captive,4)){{
+                                itemReq = with(MD_Items.light_ceramic,30,MD_Items.chromium,100);
+                            }},
+                            new AssemblerUnitPlan(MD_UnitTypes.adjudge, 60f * 40, PayloadStack.list(MD_UnitTypes.mouse,3)){{
+                                itemReq = with(MD_Items.light_ceramic,60,MD_Items.chromium,120);
+                            }},
+                            new AssemblerUnitPlan(MD_UnitTypes.pyrolume, 60f * 45, PayloadStack.list(MD_UnitTypes.shimmer,3)){{
+                                itemReq = with(MD_Items.light_ceramic,40,MD_Items.chromium,80);
+                            }})
 
             );
-            areaSize = 5;
+            areaSize = 7;
             researchCost = with(Items.silicon, 150,MD_Items.polymer,80,MD_Items.germanium,120);
 
             consumePower(2.0f);
+        }};
+        airborne_unit_assembler = new MD_UnitAssembler("airborne-unit-assembler"){{
+            requirements(Category.units, with(Items.silicon, 180,MD_Items.light_ceramic,50,MD_Items.germanium,100));
+            regionSuffix = "-assembler";
+            size = 3;
+            plans.add(
+                    new AssemblerUnitPlan(MD_UnitTypes.mist, 60f * 28, PayloadStack.list(MD_UnitTypes.lumen,2)){{
+                        itemReq = with(MD_Items.light_ceramic,20);
+                    }},
+                    setTier(1,new AssemblerUnitPlan(MD_UnitTypes.floating, 60f * 42, PayloadStack.list(MD_UnitTypes.lumen,5)){{
+                        itemReq = with(MD_Items.polymer,80,MD_Items.chromium,80);
+                    }})
+
+            );
+            areaSize = 7;
+            researchCost = with(Items.silicon, 150,MD_Items.polymer,80,MD_Items.germanium,120);
+
+            consumePower(2.0f);
+        }};
+        sharpen_assembler_module = new MD_UnitAssemblerModule("sharpen-assembler-module"){{
+            requirements(Category.units, with(Items.silicon, 200, MD_Items.light_ceramic, 80, MD_Items.chromium, 180, MD_Items.al_alloy, 150));
+            fitAssembler.addAll(
+                    eigen_unit_assembler,airborne_unit_assembler
+            );
+            consumePower(2.5f);
+            size = 3;
+            tier = 1;
+            regionSuffix = "-assembler";
         }};
 
         shaping_assembler = new PayloadPlatformConstructor("shaping-assembler"){{

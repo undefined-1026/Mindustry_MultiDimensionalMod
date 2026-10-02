@@ -102,6 +102,7 @@ public class MD_TechTree {
                     node(composite_combustion);
                 });
                 node(internal_energy_pile);
+                node(large_magnetic_node);
             });
 
 
@@ -119,6 +120,7 @@ public class MD_TechTree {
                         nodeProduce(polymorphic_crystal);
                         nodeProduce(plasma);
                     });
+                    nodeProduce(chromium);
                 });
                 nodeProduce(germanium);
                 nodeProduce(graphite);
@@ -134,27 +136,32 @@ public class MD_TechTree {
             });
             node(eigen_factory,Seq.with(new SectorComplete(starting_point)),()->{
                 node(phase_factory,()->{
-                    node(lumen,ItemStack.with(germanium,150,silicon,200),()->{});
-                });
-
-                node(captive,ItemStack.with(),()->{
-                    node(zircon,ItemStack.with(silicon,2000,al_alloy,2000),()->{});
-                    node(mouse,ItemStack.with(silicon,2500,germanium,2500,graphite,2500),()->{
-                        node(coyote);
-                    });
-                });
-                node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
-                    node(firefly,ItemStack.with(polymer,1200,silicon,1200,al_alloy,1200),()->{
-                        node(pyrolume,
-                                ItemStack.with(silicon,12000,titanium,8000,light_ceramic,4000,al_alloy,6000),
-                                Seq.with(new Research(titanium)),
-                                ()->{
-
+                    node(lumen,ItemStack.with(germanium,150,silicon,200),()->{
+                        node(mist,ItemStack.with(silicon,2000,light_ceramic,1500),()->{
+                            node(floating,ItemStack.with(silicon,10000,al_alloy,8000,light_ceramic,6000,chromium,6000),Seq.with(new Research(sharpen_assembler_module)),()->{});
                         });
                     });
                 });
 
+                node(captive,ItemStack.with(),()->{
+                    node(zircon,ItemStack.with(silicon,2000,al_alloy,2000),()->{
+                        node(sin,ItemStack.with(silicon,10000,al_alloy,8000,light_ceramic,6000,chromium,6000),Seq.with(new Research(sharpen_assembler_module)),()->{});
+                    });
+                    node(mouse,ItemStack.with(silicon,2500,germanium,2500,graphite,2500),()->{
+                        node(coyote,()->{
+                            node(adjudge,ItemStack.with(silicon,10000,al_alloy,8000,light_ceramic,6000,chromium,6000),Seq.with(new Research(sharpen_assembler_module)),()->{});
+                        });
+                    });
+                });
+                node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
+                    node(firefly,ItemStack.with(polymer,1200,silicon,1200,al_alloy,1200),()->{
+                        node(pyrolume,ItemStack.with(silicon,10000,al_alloy,8000,light_ceramic,6000,chromium,6000),Seq.with(new Research(sharpen_assembler_module)),()->{});
+                    });
+                });
                 node(eigen_unit_assembler);
+                node(sharpen_assembler_module,Seq.with(new Research(chromium)),()->{
+
+                });
             });
 
             node(starting_point,()->{

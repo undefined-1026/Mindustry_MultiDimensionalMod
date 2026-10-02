@@ -1,5 +1,7 @@
 package mDimension.world.blocks;
 
+import arc.Core;
+import arc.graphics.g2d.TextureRegion;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Tmp;
@@ -12,13 +14,14 @@ import mindustry.gen.BuildingTetherc;
 import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.gen.Unit;
+import mindustry.graphics.Shaders;
 import mindustry.type.UnitType;
 import mindustry.world.blocks.UnitTetherBlock;
 import mindustry.world.blocks.storage.CoreBlock;
 
 import static mindustry.Vars.net;
 
-public class MD_SpawnUnitCoreBlock extends CoreBlock {
+public class MD_SpawnUnitCoreBlock extends MD_CoreBlock {
     public int unitAmount = 1;
     public float spawnRotate =0,offset=0,unitBuildTime = 60f;
     public UnitType spawnUnitType = MD_UnitTypes.engineering_drone;
@@ -27,8 +30,8 @@ public class MD_SpawnUnitCoreBlock extends CoreBlock {
 
     public MD_SpawnUnitCoreBlock(String name) {
         super(name);
-        squareSprite = false;
     }
+
 
     public class MD_SpawnUnitCoreBuild extends CoreBuild implements UnitTetherBlock{
         public int spawnCount = 0;

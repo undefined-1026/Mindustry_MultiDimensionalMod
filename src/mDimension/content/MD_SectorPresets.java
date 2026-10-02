@@ -3,7 +3,9 @@ package mDimension.content;
 import mindustry.type.SectorPreset;
 
 public class MD_SectorPresets {
-    public static SectorPreset starting_point,marginal_outpost,halo_canyon,crystallization_oil_rift;
+    public static SectorPreset starting_point,marginal_outpost,halo_canyon
+            //crystallization_oil_rift
+            ;
     public static void load(){
         starting_point = new SectorPreset("starting-point", MD_Planets.depicilon,0){{
             alwaysUnlocked = true;
@@ -21,8 +23,8 @@ public class MD_SectorPresets {
             captureWave = 35;
         }};
 
-        crystallization_oil_rift = new SectorPreset("crystallization-oil-rift", MD_Planets.depicilon,171){{
-            difficulty = 4;
-        }};
+//        crystallization_oil_rift = new SectorPreset("crystallization-oil-rift", MD_Planets.depicilon,171){{
+//            difficulty = 4;
+//        }};
     }
 }

@@ -174,6 +174,7 @@ public class BeamEntity implements Entityc, Drawc {
         }
         this.launchRotation = rotation;
         this.beamData = new BeamData(laser,0);
+
         add();
     }
 

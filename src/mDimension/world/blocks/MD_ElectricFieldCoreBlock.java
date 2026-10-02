@@ -29,7 +29,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 
 import static mindustry.Vars.tilesize;
 
-public class MD_ElectricFieldCoreBlock extends CoreBlock {
+public class MD_ElectricFieldCoreBlock extends MD_CoreBlock {
     public float powerProduction = 5f;
     public float lightningTime = 30f;
     public int lightnings = 10;

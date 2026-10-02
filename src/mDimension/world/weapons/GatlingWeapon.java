@@ -121,9 +121,7 @@ public class GatlingWeapon extends Weapon {
                 mount.isOverheat = false;
             }
         }
-        if(mount.isOverheat){
-            mount.heat = Mathf.approachDelta(mount.heat,mount.overheat,1/60f);
-        }
+
         boolean can = unit.canShoot() && !mount.isOverheat;
 
         float lastReload = mount.reload;
@@ -246,8 +244,11 @@ public class GatlingWeapon extends Weapon {
             }
         }else{
             //heat decreases when not firing
-            mount.heat = Math.max(mount.heat - Time.delta * unit.reloadMultiplier / cooldownTime, 0);
-
+            if(mount.isOverheat){
+                mount.heat = Mathf.approachDelta(mount.heat,mount.overheat,1/30f);
+            }else{
+                mount.heat = Math.max(mount.heat - Time.delta * unit.reloadMultiplier / cooldownTime, 0);
+            }
             if(mount.sound != null){
                 mount.sound.update(bulletX, bulletY, false);
             }

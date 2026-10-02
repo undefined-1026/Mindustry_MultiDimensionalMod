@@ -11,6 +11,8 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.struct.Bits;
+import arc.struct.ObjectIntMap;
+import arc.struct.Seq;
 import arc.util.Scaling;
 import arc.util.Strings;
 import arc.util.Time;
@@ -31,11 +33,13 @@ import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.units.UnitAssembler;
+import mindustry.world.blocks.units.UnitAssemblerModule;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import mindustry.world.modules.ItemModule;
 
+import static mDimension.content.MD_blocks.modname;
 import static mindustry.Vars.*;
 
 public class MD_UnitAssembler extends UnitAssembler {
@@ -43,17 +47,32 @@ public class MD_UnitAssembler extends UnitAssembler {
         super(name);
         configurable = true;
         config(UnitType.class,(MD_UnitAssemblerBuild b,UnitType c)->{
-            b.type = c;
+            b.unitType = c;
         });
         configClear((MD_UnitAssemblerBuild b)->{
-            b.type = null;
+            b.unitType = null;
         });
+    }
+    public Seq<Block> fitModules = new Seq<>();
+    public ObjectIntMap<UnitType> planTiers = new ObjectIntMap<>();
+    public AssemblerUnitPlan setTier(int tier,AssemblerUnitPlan plan){
+        planTiers.put(plan.unit,tier);
+        return plan;
+    }
+    public AssemblerUnitPlan[] setTier(int tier,AssemblerUnitPlan... plans){
+        for(var plan:plans)planTiers.put(plan.unit,tier);
+        return plans;
+    }
+
+    @Override
+    public void load() {
+        super.load();
     }
 
     @Override
     public void setStats(){
         super.setStats();
-
+        stats.remove(Stat.output);
         stats.add(Stat.output, table -> {
             table.row();
 
@@ -73,6 +92,11 @@ public class MD_UnitAssembler extends UnitAssembler {
                             info.add(plan.unit.localizedName);
                             info.row();
                             info.add(Strings.autoFixed(plan.time / 60f, 1) + " " + Core.bundle.get("unit.seconds")).color(Color.lightGray);
+                            int ttier = planTiers.get(plan.unit);
+                            if(ttier > 0){
+                                info.row();
+                                info.add(Stat.moduleTier.localized() + ": " + ttier).color(Color.lightGray);
+                            }
                         }).left();
 
                         t.table(req -> {
@@ -118,15 +142,36 @@ public class MD_UnitAssembler extends UnitAssembler {
                 tier++;
             }
         });
+        stats.add(Stat.booster,table->{
+            for(var mod:fitModules) {
+                table.row();
+                table.table(Styles.grayPanel, t -> {
+                    if(mod.isBanned()){
+                        t.image(Icon.cancel).color(Pal.remove).size(40).pad(10);
+                    }else if(!mod.unlockedNow()){
+                        t.image(Icon.lock).color(Pal.darkerGray).size(40).pad(10);
+                    }else {
+                        t.image(mod.uiIcon).scaling(Scaling.fit).size(40).pad(10f).left().with(i -> StatValues.withTooltip(i, mod));
+                        t.table(info -> {
+                            info.defaults().left();
+                            info.add(mod.localizedName);
+                            info.row();
+                            info.add(Core.bundle.get("stat.moduletier") + ":" + (mod instanceof UnitAssemblerModule module ? module.tier : 0)).color(Color.lightGray);
+                        }).left();
+                    }
+                }).growX().pad(5);
+            }
+        });
     }
 
     public class MD_UnitAssemblerBuild extends UnitAssemblerBuild{
-        public UnitType type;
+        public UnitType unitType;
+        public float invalidWarmup2 = 0;
 
         @Override
         public AssemblerUnitPlan plan() {
-            if(type == null)return plans.get(0);
-            var res = plans.find(p->p.unit == type);
+            if(unitType == null)return plans.get(0);
+            var res = plans.find(p->p.unit == unitType);
             return res == null?plans.get(0):res;
         }
 
@@ -134,8 +179,8 @@ public class MD_UnitAssembler extends UnitAssembler {
         @Override
         public void buildConfiguration(Table table) {
             ItemSelection.buildTable(MD_UnitAssembler.this,table,
-                    Vars.content.units().select(u->plans.contains(p->p.unit == u)),
-                    ()->this.type,
+                    Vars.content.units().select(u->plans.contains(p->p.unit == u)).sort(u->u.id+planTiers.get(u)*1000),
+                    ()->this.unitType,
                     this::configure,
                     selectionRows, selectionColumns
                     );
@@ -149,12 +194,28 @@ public class MD_UnitAssembler extends UnitAssembler {
 
         @Override
         public float efficiencyScale() {
-            return type == null?0f:1f;
+            return unitType == null?0f:1f;
         }
 
         @Override
         public boolean shouldConsume() {
-            return super.shouldConsume() && type != null;
+            return super.shouldConsume() && unitType != null;
+        }
+
+        @Override
+        public boolean moduleFits(Block other, float ox, float oy, int rotation) {
+            return (fitModules.isEmpty() || fitModules.contains(other)) && super.moduleFits(other, ox, oy, rotation);
+        }
+
+        public boolean checkCanBuild() {
+            return unitType != null && planTiers.get(plan().unit,0)<=this.currentTier;
+        }
+
+        @Override
+        public void updateTile() {
+            super.updateTile();
+            invalidWarmup2 = Mathf.lerpDelta(invalidWarmup2, checkCanBuild() ? 0f : 1f, 0.1f);
+
         }
 
         @Override
@@ -194,7 +255,7 @@ public class MD_UnitAssembler extends UnitAssembler {
             var plan = plan();
 
             //draw the unit construction as outline
-            if(type != null)Draw.draw(Layer.blockBuilding, () -> {
+            if(unitType != null)Draw.draw(Layer.blockBuilding, () -> {
                 Draw.color(Pal.accent, warmup);
 
                 Shaders.blockbuild.region = plan.unit.fullIcon;
@@ -214,9 +275,9 @@ public class MD_UnitAssembler extends UnitAssembler {
             Draw.z(Layer.buildBeam);
 
             //draw unit silhouette
-            Draw.mixcol(Tmp.c1.set(Pal.accent).lerp(Pal.remove, invalidWarmup), 1f);
+            Draw.mixcol(Tmp.c1.set(Pal.accent).lerp(Pal.remove, Math.min(1f,invalidWarmup + invalidWarmup2)), 1f);
             Draw.alpha(Math.min(powerWarmup, sameTypeWarmup));
-            if(type != null)Draw.rect(plan.unit.fullIcon, spawn.x, spawn.y, rotdeg() - 90f);
+            if(unitType != null)Draw.rect(plan.unit.fullIcon, spawn.x, spawn.y, rotdeg() - 90f);
 
             //build beams do not draw when invalid
             Draw.alpha(Math.min(1f - invalidWarmup, warmup));
@@ -242,7 +303,7 @@ public class MD_UnitAssembler extends UnitAssembler {
             float fulls = areaSize * tilesize/2f;
 
             //draw full area
-            Lines.stroke(2f, Pal.accent);
+            Lines.stroke(2f, Tmp.c4.set(Pal.accent).lerp(Pal.remove, invalidWarmup2).a(1f));
             Draw.alpha(powerWarmup);
             Drawf.dashRectBasic(spawn.x - fulls, spawn.y - fulls, fulls*2f, fulls*2f);
 
@@ -261,7 +322,7 @@ public class MD_UnitAssembler extends UnitAssembler {
 
         @Override
         public boolean acceptPayload(Building source, Payload payload) {
-            return super.acceptPayload(source, payload) && type != null;
+            return super.acceptPayload(source, payload) && unitType != null;
         }
 
         @Override
@@ -361,21 +422,21 @@ public class MD_UnitAssembler extends UnitAssembler {
                 t.left().defaults().left();
 
 
-                t.label(() -> "[accent] -> []" + (type == null?'\ue815':unit().emoji() + " " + unit().localizedName));
+                t.label(() -> "[accent] -> []" + (unitType == null?'\ue815':unit().emoji() + " " + unit().localizedName));
             }).pad(4).padLeft(0f).fillX().left();
         }
 
         @Override
         public void write(Writes w) {
             super.write(w);
-            w.i(type == null?-1:type.id);
+            w.i(unitType == null?-1: unitType.id);
         }
 
         @Override
         public void read(Reads r, byte revision) {
             super.read(r, revision);
             int id = r.i();
-            type = id<0?null:content.unit(id);
+            unitType = id<0?null:content.unit(id);
         }
     }
 }

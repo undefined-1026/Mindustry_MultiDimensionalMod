@@ -26,6 +26,7 @@ import mDimension.world.weapons.OverdriveWeapon;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.FlyingFollowAI;
+import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
@@ -36,6 +37,7 @@ import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootBarrel;
 import mindustry.entities.pattern.ShootHelix;
+import mindustry.entities.pattern.ShootMulti;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
@@ -46,6 +48,7 @@ import mindustry.type.Weapon;
 import mDimension.entity.ability.*;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
+import static mDimension.content.MD_Fx.v;
 import static mDimension.content.MD_blocks.setDefault;
 import static mindustry.Vars.tilesize;
 
@@ -56,7 +59,7 @@ import mindustry.type.weapons.PointDefenseWeapon;
 public class MD_UnitTypes {
 
     public static UnitType captive , zircon,sin;
-    public static UnitType mouse,coyote;
+    public static UnitType mouse,coyote,adjudge;
     public static UnitType shimmer , firefly,pyrolume,burst;
     public static UnitType lumen,mist,floating;
     //coreUnit
@@ -509,6 +512,88 @@ public class MD_UnitTypes {
             );
 
         }};
+        adjudge = new DepicilonUnitType.DepicilonTankUnitType("adjudge"){{
+            hitSize = 22;
+            health = 3000;
+            treadPullOffset = 11;
+            armor = 12;
+            speed = 13/7.5f;
+            rotateSpeed = 4f;
+            accel = 0.2f;
+            drag = 0.15f;
+            rotateMoveFirst = false;
+            itemCapacity = 0;
+            floorMultiplier = 0.7f;
+            softShadowScl = 0.8f;
+            treadRects = new Rect[]{
+                    new Rect(34 - 64, 22 - 64, 13, 26),
+                    new Rect(19 - 64, 68 - 64, 13, 38),
+                    new Rect(37 - 64, 78 - 64, 13, 38)
+            };
+            crushFragile = false;
+            tankMoveVolume *= 0.8f;
+            tankMoveSound = Sounds.tankMove;
+            weapons.add(new Weapon(this.name+"-weapon"){{
+                recoils = 2;
+                x = 0;y = -1f;
+                mirror = false;
+                layerOffset = 0.01f;
+                rotate = true;
+                rotateSpeed = 3f;
+                for (int i = 0; i < 2; i++){
+                    int j = i;
+                    parts.add(
+                            new RegionPart("-barrel-"+(i!=0?"l":"r")){{
+                                progress = PartProgress.recoil;
+                                moveY = -1f;
+                                under = true;
+                                recoilIndex = j;
+                            }}
+                    );
+                }
+                shoot = new ShootMulti(
+                        new ShootBarrel() {{
+                            barrels = new float[]{
+                                    20/4f,0,0,
+                                    -20/4f,0,0
+                            };
+                        }},
+                        new ShootHelix() {{
+                            scl = 6f;
+                            mag =0.6f;
+                        }}
+                );
+                shootSound = Sounds.shootNavanax;
+                shootSoundVolume= 0.7f;
+                reload = 40f;
+                bullet = new BasicBulletType(22f*8f/60f/1.5f,40){{
+                    setDefault(this);
+                    hitEffect = new MultiEffect(this.hitEffect,MD_Fx.brokenWaveColor(12f,10,8,1.2f,7,2,2.3f));
+                    lifetime = 60*1.5f;
+                    intervalDelay = 8f;
+                    intervalBullet = new LightningBulletType(){{
+                        damage = 5;
+                        lightningLength = 5;
+                        lightningLengthRand = 4;
+                        lightningColor = Color.valueOf("F4FFBF");
+                    }};
+                    trailEffect = Fx.hitBeam;trailInterval = 3f;
+                    trailLength = 15;
+                    trailWidth = 2.1f;
+                    width = 10;
+                    height = 15f;
+                    backColor = trailColor = hitColor = lightningColor = Color.valueOf("F4FFBF");
+                    lightning = 3;
+                    lightningCone = 180;
+                    lightningLength = 8;
+                    lightningLengthRand = 5;
+                    lightningDamage = 20;
+                    armorMultiplier = 1.5f;
+                    homingPower = 0.01f;
+                    homingRange = 60f;
+                }};
+            }});
+        }};
         shimmer = new DepicilonUnitType("shimmer"){{
 
             hovering = true;
@@ -554,7 +639,7 @@ public class MD_UnitTypes {
                 parts.add(new RegionPart("-blade"){{
                     heatProgress = PartProgress.warmup;
                     progress = PartProgress.warmup;
-                    heatColor = Color.valueOf("FFAA50");
+                    heatColor = Color.valueOf("FFD1C9");
                     x = 0f;
                     y = 0f;
                     moveRot = -18f;
@@ -574,13 +659,13 @@ public class MD_UnitTypes {
                     pierceCap = 2;
                     buildingDamageMultiplier = 0.3f;
 
-                    hitColor = flareColor = Color.valueOf("B2E9FF");
+                    hitColor = flareColor = Color.valueOf("FFD1C9");
                     flareLength = 9f;
                     flareWidth = 2f;
                     colors = new Color[]{
-                            Color.valueOf("4263DB").a(0.45f),
-                            Color.valueOf("58A2E8").a(0.65f),
-                            Color.valueOf("78E2FF").a(0.85f),
+                            Color.valueOf("DB4742").a(0.45f),
+                            Color.valueOf("E86458").a(0.65f),
+                            Color.valueOf("FF8C78").a(0.85f),
                             Color.white};
                 }};
             }});
@@ -602,7 +687,7 @@ public class MD_UnitTypes {
                     collidesTiles = false;
                     collides = false;
                     despawnHit = true;
-                    hitColor = Color.valueOf("B2E9FF");
+                    hitColor = Color.valueOf("FFD1C9");
                     despawnEffect = new MultiEffect(MD_Fx.spark(25f,15,7*8,16f),
                             MD_Fx.spikeWaveColor(22f,5*8f,2f,10,0.4f,2.5f),
                             MD_Fx.polyStarExplosion(20,3,9*8,5f,0,true)
@@ -676,7 +761,7 @@ public class MD_UnitTypes {
                     lifetime = 20/35f * 60f;
                     width = 10f;
                     height = 16f;
-                    trailColor = hitColor = backColor = Color.valueOf("B2E9FF");
+                    trailColor = hitColor = backColor = Color.valueOf("FFD1C9");
                     fragBullets = 1;
                     trailLength = 8;
                     trailWidth  = 2f;
@@ -686,7 +771,7 @@ public class MD_UnitTypes {
                     fragAngle = 0;
                     armorMultiplier = 0.4f;
                     fragBullet = new ShrapnelBulletType(){{
-                        toColor = Color.valueOf("B2E9FF");
+                        toColor = Color.valueOf("FFD1C9");
                         lifetime = 18f;
                         serrationSpaceOffset = 40;
                         segmentScl = 12f;
@@ -743,7 +828,7 @@ public class MD_UnitTypes {
                         bullet = new RailBulletType(){{
                             length = 20*8;
                             damage = 200;
-                            trailColor = hitColor = Color.valueOf("D9FCFF");
+                            trailColor = hitColor = Color.valueOf("FFD1C9");
                             hitEffect = MD_Fx.spikeHitRotationSmall;
                             pierceEffect = Fx.none;
                             pierceDamageFactor = 0.2f;
@@ -754,10 +839,11 @@ public class MD_UnitTypes {
                                 Drawf.tri(e.x, e.y, e.fout() * 3, 11, e.rotation);
                             });
 
-                            pointEffect = new Effect(15f,e->{
+                            pointEffect = new Effect(14f,e->{
                                 color(e.color);
                                 for(int i : Mathf.signs){
-                                    Drawf.tri(e.x, e.y, 10+e.fin()*8f, 2.1f * e.fout(), e.rotation + i * 90);
+                                    v.trns(e.rotation + i * 90,e.fout() * 1.3f);
+                                    Drawf.tri(e.x+v.x, e.y+v.y, 10+e.fin()*8f, 1.2f * e.fout(), e.rotation + i * 90);
                                 }
                             });
 
@@ -812,12 +898,12 @@ public class MD_UnitTypes {
                             shapes = 1;
                             radius = 0;
                             layer = Layer.effect;
-                            color = Color.valueOf("D9FCFF");
+                            color = Color.valueOf("FFD1C9");
                             x=y=0;
                             progress = PartProgress.warmup.mul(PartProgress.reload.inv()).delay(0.1f);
                         }});
                         bullet = new RefractedLaserBulletType(){{
-                            laserColor = Color.valueOf("85E0FF");
+                            laserColor = Color.valueOf("FFB5A8");
                             setDefault(this);
                             shootEffect = smokeEffect = Fx.none;
                             emit = true;
@@ -885,7 +971,7 @@ public class MD_UnitTypes {
                         effect = MD_Fx.triangle.layer(Layer.flyingUnit+1f);
                         effectChance = 0.25f;
                     }},
-                    new ShieldRegenFieldAbility(15,1200,75,40)
+                    new ShieldRegenFieldAbility(30,1200,150,40)
             );
 
             weapons.add(
@@ -916,7 +1002,7 @@ public class MD_UnitTypes {
                             maxRange = 8*8f;
                             ignoreRotation = true;
 
-                            backColor =hitColor= Color.valueOf("B2E9FF");
+                            backColor =hitColor= Color.valueOf("FFD1C9");
                             frontColor = Color.white;
                             mixColorTo = Color.white;
 
@@ -966,7 +1052,7 @@ public class MD_UnitTypes {
                                 lifetime = 27f;
                                 homingPower = 0.12f;
                                 homingRange = 30*8f;
-                                frontColor = trailColor = backColor = hitColor = Color.valueOf("B2E9FF");
+                                frontColor = trailColor = backColor = hitColor = Color.valueOf("FFD1C9");
                                 despawnEffect = hitEffect = MD_Fx.Mulitpleslash(20,2,hitColor,16,3f,4f);
                             }};
                         }
@@ -993,7 +1079,7 @@ public class MD_UnitTypes {
                             }
                         };
                     }
-                        Color c = Color.valueOf("B2E9FF");
+                        Color c = Color.valueOf("FFD1C9");
                         @Override
                         public void draw(Unit unit, WeaponMount mount) {
                             super.draw(unit, mount);
@@ -1054,7 +1140,7 @@ public class MD_UnitTypes {
                         rotationLimit = 361;
                         bullet = new BasicBulletType(22*8/60f,35,modname+"acicular-bullet"){{
                             homingPower = 0.02f;
-                            lightningColor = backColor = trailColor = hitColor = Color.valueOf("B2E9FF");
+                            lightningColor = backColor = trailColor = hitColor = Color.valueOf("FFD1C9");
                             lightningDamage = 20f;
                             lightning = 1;
                             lightningLength = 2;
@@ -1169,7 +1255,7 @@ public class MD_UnitTypes {
             range = 8*8f;
             abilities.addAll(
                     new StatusFieldAbility(MD_StatusEffects.bless, 6*60, 5*60,8*8f){{color = Pal.heal;}},
-                    new ShieldRegenFieldAbility(20,200,60f,8*60f){{activeEffect = Fx.none;}},
+                    new ShieldRegenFieldAbility(40,200,120,8*8f){{activeEffect = Fx.none;}},
                     new RepairBuildFieldAbility(120,8*12,60),
                     new PersonalShieldAbility(400,20/60f)
             );

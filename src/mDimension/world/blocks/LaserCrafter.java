@@ -15,6 +15,8 @@ import mindustry.world.meta.Stat;
 
 import java.util.Arrays;
 
+import static mindustry.Vars.net;
+import static mindustry.Vars.state;
 import static mindustry.world.meta.StatValues.stack;
 
 
@@ -100,9 +102,9 @@ public class LaserCrafter extends GenericCrafter implements Slant{
                     Vec2 p = MD_Edge.transpose(craftPos[i].cpy(),rotation).add(x,y);
                     BeamEntity laserEntity = new BeamEntity(beam,this);
                     laserEntity.create(p.x, p.y, MD_Edge.transpose(craftRotation[i].cpy(),rotation), i);
-                    if(this.team == Vars.player.team())laserEntity.beamData.beam.unlock();
                 } else {
                     crafterLasers[i].setPower(efficiency*warmup*beamPower/beamAmount);
+                    if(efficiency>0.01f && !net.client() && state.isCampaign() && team == state.rules.defaultTeam)crafterLasers[i].beamData.beam.unlock();
                 }
             }
 

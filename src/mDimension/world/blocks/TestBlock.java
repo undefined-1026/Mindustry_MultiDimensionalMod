@@ -1,6 +1,7 @@
 package mDimension.world.blocks;
 
 import arc.func.Cons;
+import mDimension.core.MDRenderer;
 import mindustry.gen.Building;
 import mindustry.world.blocks.production.GenericCrafter;
 
@@ -21,6 +22,7 @@ public class TestBlock extends GenericCrafter {
     }
 
     public class TestBlockBuild extends GenericCrafterBuild{
+        public MDRenderer renderer = MDRenderer.renderer;
         @Override
         public void draw() {
             super.draw();

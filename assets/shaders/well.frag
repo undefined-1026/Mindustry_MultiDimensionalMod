@@ -41,20 +41,28 @@ vec2 center(vec2 p, float w, float dx) {
 }
 
 void main() {
-    vec4 color = texture2D(u_texture, v_texCoords);
-    vec2 c = v_texCoords * u_resolution + u_campos;
-    vec2 o = center(c, 5.0, u_time / 60.0);
-    float m = abs(((sin(2.0 * cos(1.8 * o.x) + o.y + u_time / 80.0) + 1.0) + cos(u_time / 40.0 + sin(o.y * 0.7))) / 4.0);
+    float btime = u_time / 1000;
+    vec2 coords = v_texCoords * u_resolution + u_campos;
+    float a = texture2D(u_noise,coords/500 + vec2(btime) * vec2(-0.9, 0.8)).r + texture2D(u_noise,coords/200 + vec2(btime) * vec2(0.7,-0.9)).r;
+    a/=2.0;
+    vec4 c = texture2D(u_texture,v_texCoords);
+    c.rgb+=vec3(a*0.4);
 
-    vec4 maxed = nearsMax4(stroke * (1.0 + m * 4.0));
-    vec2 v = vec2(1.0 / u_resolution.x, 1.0 / u_resolution.y);
-    vec2 T = v_texCoords.xy;
-
-    if (maxed.a > 0.9 && color.a < 0.9) {
-        gl_FragColor = vec4(maxed.rgb, maxed.a * 0.5);
-    } else {
-        color.a *= (0.3 * (m + 0.3));
-        color.rgb *= (m / 4.0 + 1.0);
-        gl_FragColor = color;
-    }
+    gl_FragColor = c;
+//    vec4 color = texture2D(u_texture, v_texCoords);
+//    vec2 c = v_texCoords * u_resolution + u_campos;
+//    vec2 o = center(c, 5.0, u_time / 60.0);
+//    float m = abs(((sin(2.0 * cos(1.8 * o.x) + o.y + u_time / 80.0) + 1.0) + cos(u_time / 40.0 + sin(o.y * 0.7))) / 4.0);
+//
+//    vec4 maxed = nearsMax4(stroke * (1.0 + m * 4.0));
+//    vec2 v = vec2(1.0 / u_resolution.x, 1.0 / u_resolution.y);
+//    vec2 T = v_texCoords.xy;
+//
+//    if (maxed.a > 0.9 && color.a < 0.9) {
+//        gl_FragColor = vec4(maxed.rgb, maxed.a * 0.5);
+//    } else {
+//        color.a *= (0.3 * (m + 0.3));
+//        color.rgb *= (m / 4.0 + 1.0);
+//        gl_FragColor = color;
+//    }
 }

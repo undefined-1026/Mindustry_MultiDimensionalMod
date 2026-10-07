@@ -3,22 +3,47 @@ package mDimension.core;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
 import arc.graphics.gl.*;
+import arc.struct.Seq;
+import arc.util.pooling.Pool;
 import mindustry.Vars;
 import mindustry.game.EventType;
+import mindustry.graphics.Layer;
 
 import static arc.Core.settings;
-
+//*参考了eu**/
 public class MDRenderer {
     public static MDRenderer renderer;
-    private FrameBuffer buffer;
+
+    private FrameBuffer invBuffer;
+    private FrameBuffer holeBuffer;
+    private Texture sample;
+    private Seq<Hole> holes = new Seq<>();
+    private Pool<Hole> holePool = new Pool<Hole>() {
+        @Override
+        protected Hole newObject() {
+            return new Hole();
+        }
+
+        @Override
+        protected void reset(Hole o) {
+            o.radius = 10;
+            o.x = o.y = o.strength = 0;
+        }
+    };
     public static final float extBloomLayer = 42f;
+
+    public static void addHole(float x,float y,float str,float rad){
+        renderer.holes.add(renderer.holePool.obtain().init(x,y,str,rad));
+    }
 
     public static Well well;
     protected MDRenderer(){
         if(!Vars.headless) {
-            buffer = new FrameBuffer();
+            invBuffer = new FrameBuffer();
+            holeBuffer = new FrameBuffer();
             well = new Well();
             well.init();
             Events.run(EventType.Trigger.draw, this::advancedDraw);
@@ -33,6 +58,8 @@ public class MDRenderer {
             return;
         }
 
+        addHole(8*160,8*160,50,10*8f);
+
         Draw.draw(extBloomLayer-0.01f, () -> {
             Vars.renderer.bloom.capture();
         });
@@ -41,13 +68,33 @@ public class MDRenderer {
             Vars.renderer.bloom.render();
         });
 
-        Draw.draw(211.6f, () -> {
-            well.capture();
+        Draw.drawRange(212f,well::capture,well::render);
+
+
+        Draw.draw(-12 ,()->{
+            invBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+            invBuffer.begin();
+            holeBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+            holeBuffer.begin();
         });
 
-        Draw.draw(212.5f, () -> {
-            well.render();
+        Draw.drawRange(211,0.2f,()->{
+            invBuffer.end();
+            Vars.renderer.effectBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+            Vars.renderer.effectBuffer.begin();
+        },()->{
+            MDShaders.invert.teakSample = invBuffer.getTexture();
+            Vars.renderer.effectBuffer.end();
+            Vars.renderer.effectBuffer.blit(MDShaders.invert);
         });
+        Draw.draw(140.1f,()->{
+            holeBuffer.end();
+            MDShaders.hole.setOfSeq(holes);
+            holeBuffer.blit(MDShaders.hole);
+            renderer.holePool.freeAll(holes);
+        });
+
+        holes.clear();
     }
 
     public static class Well{
@@ -58,8 +105,9 @@ public class MDRenderer {
         private boolean capturing = false;
 
         public void init(){
-            buffer = new FrameBuffer();
+            buffer = Vars.renderer.effectBuffer;
             shader = MDShaders.well;
+            //shader.apply();
         }
         public void capture(){
             if(!capturing){
@@ -74,12 +122,30 @@ public class MDRenderer {
                 capturing = false;
                 buffer.end();
             }
-            MDShaders.well.apply();
-            buffer.blit(MDShaders.well);
+            buffer.blit(shader);
 
             buffer.begin();
             Draw.rect();
             buffer.end();
+        }
+    }
+    public static class Hole{
+        public float x,y,strength,radius;
+        public Hole() {
+        }
+        public Hole(float x, float y, float strength, float radius) {
+            this.x = x;
+            this.y = y;
+            this.strength = strength;
+            this.radius = radius;
+        }
+
+        public Hole init(float x, float y, float strength, float radius){
+            this.x = x;
+            this.y = y;
+            this.strength = strength;
+            this.radius = radius;
+            return this;
         }
     }
 

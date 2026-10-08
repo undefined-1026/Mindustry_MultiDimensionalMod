@@ -16,7 +16,7 @@ import mDimension.content.MD_beams;
 import mDimension.world.beam.BeamBlock;
 import mDimension.world.data.BeamData;
 import mDimension.world.data.Beam;
-import mDimension.world.blocks.LaserCrafter;
+import mDimension.world.blocks.MD_BeamCrafter;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.core.World;
@@ -35,22 +35,23 @@ public class BeamEntity implements Entityc, Drawc {
     public boolean isBlocked = false;
     public int id = EntityGroup.nextId();
     public float warmup=0;
-    public float scl = 1;
+    public float strokeScl = 1;
     public Building owner = null;
 
     public int createId;
+    public boolean collision = true;
 
     public Vec2 rotation = new Vec2(1,0);
     public Vec2 launchRotation;
 
-    public FloatSeq points = new FloatSeq(6);
+    public FloatSeq vertexs = new FloatSeq(9);
 
     public float x;
     public float y;
 
     public Seq<Building> passBuild = new Seq<Building>(6);
 
-    public Beam laser = MD_beams.near_infrared_light;
+    public Beam beam = MD_beams.near_infrared_light;
     public BeamData beamData;
     public int step = 0;
     public int cycleLength = 0;
@@ -58,25 +59,35 @@ public class BeamEntity implements Entityc, Drawc {
 
 
 
-
-    public BeamEntity(){
-
-    }
-    public BeamEntity(Beam laser, Building owner){
-        this.laser = laser;
+    public BeamEntity(){}
+    public BeamEntity(Beam beam, Building owner){
+        this.beam = beam;
         this.owner = owner;
+    }
+
+    public void reast(){
+        passBuild.clear();
+        vertexs.clear();
+        isBlocked = false;
+        cx=x;cy=y;
+        rotation.set(launchRotation);
+        cycleLength = beamData.length;
+        collision = true;
+        if(owner.block instanceof MD_BeamCrafter laserCrafter){
+            laserCrafter.beamReasted(owner,this);
+        }
     }
 
     public void setPower(float power){this.beamData.setPower(power);}
 
     public void start(float x,float y,Vec2 r){
-        points.add(x +r.x*4,y +r.y*4);
+        vertexs.add(x +r.x*4,y +r.y*4,collision?1f:beam.noCollisionScl);
     }
     public void node(float x, float y){
-        points.add(x,y);
+        vertexs.add(x,y,collision?1f:beam.noCollisionScl);
     }
     public void end(float x,float y,Vec2 r){
-        points.add(x -r.x*4,y -r.y*4);
+        vertexs.add(x -r.x*4,y -r.y*4,collision?1f:beam.noCollisionScl);
     }
     public void updateEntity(){
         warmup = Mathf.approachDelta(warmup,beamData.power > 0.01f ?1f:0f,1.5f/60f);
@@ -86,21 +97,16 @@ public class BeamEntity implements Entityc, Drawc {
     }
     @Override
     public void update() {
-        this.scl = scl();
+        this.strokeScl = scl();
 
-        if (!(owner instanceof LaserCrafter.TestCrafterBuild tcb) || !owner.isValid() || !Arrays.asList(tcb.crafterLasers).contains(this)) {
+        if (!(owner instanceof MD_BeamCrafter.TestCrafterBuild tcb) || !owner.isValid() || !Arrays.asList(tcb.crafterLasers).contains(this)) {
             remove();
             return;
         }
-
-        points.clear();
-        passBuild.clear();
+        reast();
         start(x,y,launchRotation);
-        isBlocked = false;
-        cx=x;cy=y;
-        rotation.set(launchRotation);
         updateEntity();
-        cycleLength = beamData.length;
+
         for (int i = 1; i <= cycleLength; i++) {
             step = i;
             cx += rotation.x*8;
@@ -114,7 +120,7 @@ public class BeamEntity implements Entityc, Drawc {
                 }
                 continue;
             }
-            if(passBuild.contains(onBuild)){
+            if(passBuild.contains(onBuild) && collision){
                 end(cx,cy,rotation);
                 isBlocked = true;
                 break;
@@ -122,20 +128,20 @@ public class BeamEntity implements Entityc, Drawc {
             if(onBuild instanceof BeamBlock.BeamBlockBuild beamBuild){
                 if(beamBuild.handleBeam(this)){
                     break;
-                };
+                }
                 continue;
             }
-            if (ConsumeBeam.getLaserConsume(onBuild.block).size != 0) {
+            if (ConsumeBeam.getBeamConsume(onBuild.block).size != 0 && collision) {
                 end(cx,cy,rotation);
                 isBlocked = true;
-                for (ConsumeBeam c : ConsumeBeam.getLaserConsume(onBuild.block)) {
-                    if (c.laserDataMap.get(onBuild) == null) continue;
+                for (ConsumeBeam c : ConsumeBeam.getBeamConsume(onBuild.block)) {
+                    if (c.beamDataMap.get(onBuild) == null) continue;
                     c.accrue(onBuild, beamData);
                 }
                 break;
             }
 
-            if (onSolid(cx, cy)) {
+            if (onSolid(cx, cy) && collision) {
                 end(cx,cy,rotation);
                 isBlocked = true;
                 break;
@@ -151,8 +157,8 @@ public class BeamEntity implements Entityc, Drawc {
     @Override
     public void draw() {
         float a = (Core.settings.getInt(MDimensionMod.BEAM_OPACITY,80)/100f);
-        Draw.mixcol(laser.toColor,(scl-1) * 2.5f);
-        if(warmup>0.01f)laser.beamDrawer.get(this,a);
+        Draw.mixcol(beam.toColor,(strokeScl -1) * 2.5f);
+        if(warmup>0.01f) beam.beamDrawer.get(this,a);
         Draw.reset();
     }
 
@@ -169,11 +175,11 @@ public class BeamEntity implements Entityc, Drawc {
     public void create(float x, float y,Vec2 rotation,int id){
         this.x = x;
         this.y = y;
-        if(buildOn()!=null && buildOn() instanceof LaserCrafter.TestCrafterBuild tcb && id >=0){
+        if(buildOn()!=null && buildOn() instanceof MD_BeamCrafter.TestCrafterBuild tcb && id >=0){
             tcb.crafterLasers[id] = this;
         }
         this.launchRotation = rotation;
-        this.beamData = new BeamData(laser,0);
+        this.beamData = new BeamData(beam,0);
 
         add();
     }

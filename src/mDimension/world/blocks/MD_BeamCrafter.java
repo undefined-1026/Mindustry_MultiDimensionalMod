@@ -8,8 +8,8 @@ import mDimension.entity.BeamEntity;
 import mDimension.meta.MD_StatValues;
 import mDimension.tool.MD_Edge;
 import mDimension.world.data.Beam;
-import mindustry.Vars;
 import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
 
@@ -20,7 +20,7 @@ import static mindustry.Vars.state;
 import static mindustry.world.meta.StatValues.stack;
 
 
-public class LaserCrafter extends GenericCrafter implements Slant{
+public class MD_BeamCrafter extends GenericCrafter implements Slant{
     public float beamPower = 10f;
     public boolean diagonalFilp = false;
     // one is index;two is laser rotate
@@ -34,7 +34,7 @@ public class LaserCrafter extends GenericCrafter implements Slant{
     public Beam beam = MD_beams.near_infrared_light;
     private int beamAmount;
     private Vec2[] beamPos;
-    public LaserCrafter(String name){
+    public MD_BeamCrafter(String name){
         super(name);
         rotate = true;
         rotateDraw = false;
@@ -58,6 +58,9 @@ public class LaserCrafter extends GenericCrafter implements Slant{
         stats.add(Stat.output,t->{
             t.add(MD_StatValues.BeamStack(beam,beamPower));
         });
+    }
+
+    public void beamReasted(Building self, BeamEntity e){
     }
 
     @Override

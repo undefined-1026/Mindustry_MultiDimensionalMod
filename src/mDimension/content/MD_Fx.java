@@ -9,6 +9,7 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import mDimension.core.MDRenderer;
 import mDimension.entity.EntityShield;
 import mDimension.entity.VisibleEffect;
 import mindustry.Vars;
@@ -1016,7 +1017,24 @@ public class MD_Fx {
             });
         });
     }
-
+    public static Effect distort(float life,float rad,float toRad,float str){
+        return new Effect(life,e->{
+            var r = rad + toRad * e.fin();
+            MDRenderer.addHole(e.x,e.y,r,str * e.fout());
+        });
+    }
+    public static Effect distortPow(float life,float rad,float toRad,float str){
+        return new Effect(life,e->{
+            var r = rad + toRad * e.fin();
+            MDRenderer.addHole(e.x,e.y,r,str * e.foutpowdown());
+        });
+    }
+    public static Effect distortFslope(float life,float rad,float toRad,float str){
+        return new Effect(life,e->{
+            var r = rad + toRad * e.fin();
+            MDRenderer.addHole(e.x,e.y,r,str * e.fslope());
+        });
+    }
 
 
 }

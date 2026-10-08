@@ -54,14 +54,18 @@ public class MD_TechTree {
                         node(polymer_compressor);
                     });
                 });
-                node(light_ceramic_wrapper,()->{
-                    node(infrared_laser,()-> {
-                        node(beam_merging_prism,()->{
-                            node(diagonal_beam_merging_prism);
+                node(infrared_laser,()-> {
+                    node(beam_merging_prism,()->{
+                        node(diagonal_beam_merging_prism,()->{
+                            node(beam_polarizing_filter);
                         });
-                        node(bright_light_laser,Seq.with(new Research(light_ceramic)));
+                    });
+                    node(bright_light_laser, Seq.with(new Research(light_ceramic)));
+                    node(light_ceramic_wrapper,()->{
+
                     });
                 });
+
             });
             node(fluid_conduit,Seq.with(new Research(ammonia)),()->{
                 node(directional_fluid_router,()->{

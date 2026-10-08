@@ -93,7 +93,9 @@ public class MD_blocks {
     infrared_laser, ultraviolet_laser,bright_light_laser, nihility_exciter,
 
     ngm_launch_pad,
-            ti_alloy_smelting, helium_factory, test2, beam_merging_prism,diagonal_beam_merging_prism,light_ceramic_wrapper,
+            ti_alloy_smelting, helium_factory, test2,
+            beam_merging_prism,diagonal_beam_merging_prism,beam_polarizing_filter,
+            light_ceramic_wrapper,
             water_pyrolyzer, carbon_fibre_binder, heavy_pulverizer, polymer_compressor, phase_adder, ammonia_chamber,
     //distribution
     light_junction,
@@ -274,7 +276,7 @@ public class MD_blocks {
         ti_alloy_smelting = new GenericCrafter("ti-alloy-smelting") {{
             requirements(Category.crafting, ItemStack.with(
                     MD_Items.al_alloy, 120,
-                    MD_Items.polymer,150,
+                    Items.titanium,150,
                     MD_Items.light_ceramic, 70,
                     Items.silicon, 120
             ));
@@ -398,7 +400,7 @@ public class MD_blocks {
         //endregion
         //region beam_merging_prism 激光棱镜
         beam_merging_prism = new MD_BeamDeflector("beam-merging-prism") {{
-            requirements(Category.crafting, with());
+            requirements(Category.crafting, with(MD_Items.aluminium,10,MD_Items.germanium,15));
             size = 1;
             drawArrow = true;
             drawer = new DrawMulti(
@@ -408,7 +410,7 @@ public class MD_blocks {
         }};
 
         diagonal_beam_merging_prism = new MD_BeamDeflector("diagonal-beam-merging-prism") {{
-            requirements(Category.crafting, with());
+            requirements(Category.crafting, with(MD_Items.aluminium,10,MD_Items.germanium,15));
             afterRotation.set(1, 1);
             size = 1;
             diagonalFlip = true;
@@ -417,6 +419,11 @@ public class MD_blocks {
                     new DrawRegion(),
                     new DrawRotation("-arrow", 4)
             );
+        }};
+
+        beam_polarizing_filter = new MD_BeamPolarizingFilter("beam-polarizing-filter"){{
+            requirements(Category.crafting, with(MD_Items.light_ceramic,10,MD_Items.germanium,15));
+            size = 1;
         }};
         //endregion
         ammonia_chamber = new GenericCrafter("ammonia-chamber") {{
@@ -509,7 +516,7 @@ public class MD_blocks {
         }};
         //endregion
         //region infrared_laser 激光发生器
-        infrared_laser = new LaserCrafter("infrared-laser") {{
+        infrared_laser = new MD_BeamCrafter("infrared-laser") {{
             requirements(Category.crafting, with(Items.silicon,30,MD_Items.germanium,50));
             craftPos = new Vec2[]{
                     new Vec2(4, -4),
@@ -526,7 +533,7 @@ public class MD_blocks {
             beamPower = 10f;
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
-        ultraviolet_laser = new LaserCrafter("ultraviolet-laser") {{
+        ultraviolet_laser = new MD_BeamCrafter("ultraviolet-laser") {{
             requirements(Category.crafting, with());
             craftPos = new Vec2[]{
                     new Vec2(4, -4),
@@ -543,7 +550,7 @@ public class MD_blocks {
             beamPower = 6f;
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
-        bright_light_laser = new LaserCrafter("bright-light-laser") {{
+        bright_light_laser = new MD_BeamCrafter("bright-light-laser") {{
             requirements(Category.crafting, with(Items.silicon,50,MD_Items.light_ceramic,15,MD_Items.germanium,80));
             craftPos = new Vec2[]{
                     new Vec2(4, -4),
@@ -563,7 +570,7 @@ public class MD_blocks {
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
 
-        nihility_exciter = new LaserCrafter("nihility-exciter") {{
+        nihility_exciter = new MD_BeamCrafter("nihility-exciter") {{
             requirements(Category.crafting, with());
             craftPos = new Vec2[]{
                     new Vec2(-4, 4),
@@ -2354,7 +2361,7 @@ public class MD_blocks {
                         lifetime = 16f;
                         hitSize = 22f;
                         knockback = 10f;
-                        despawnEffect = new MultiEffect(MD_Fx.starExplosionBig, MD_Fx.spikeExplosion);
+                        despawnEffect = new MultiEffect(MD_Fx.distortPow(25,20*8,5*8,25),MD_Fx.starExplosionBig, MD_Fx.spikeExplosion);
                         hitEffect = new MultiEffect(MD_Fx.spikeHit, MD_Fx.spikeHitRotation);
 
                         setDefaults = false;

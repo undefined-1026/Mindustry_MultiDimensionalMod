@@ -31,7 +31,7 @@ public class ConsumeBeam extends Consume {
 
     public static Seq<ConsumeBeam> allConsume = new Seq<>();
 
-    public ObjectMap<Building,LaserModule> laserDataMap = new ObjectMap<>();
+    public ObjectMap<Building,LaserModule> beamDataMap = new ObjectMap<>();
     public static class LaserModule {
         public float cachePower;
         public float power = 0;
@@ -72,7 +72,7 @@ public class ConsumeBeam extends Consume {
         //endregion
     }
 
-    public static Seq<ConsumeBeam> getLaserConsume(Block block){
+    public static Seq<ConsumeBeam> getBeamConsume(Block block){
         out.clear();
         for(Consume c:block.consumers){
             if(c instanceof ConsumeBeam cl){
@@ -84,14 +84,14 @@ public class ConsumeBeam extends Consume {
 
     @Override
     public float efficiency(Building b) {
-        Items.copper.description = "amount:"+laserDataMap.size;
+        Items.copper.description = "amount:"+ beamDataMap.size;
         if (b.dead) {
-            laserDataMap.remove(b);
+            beamDataMap.remove(b);
             return 0;
         }
-        LaserModule module = laserDataMap.get(b);
+        LaserModule module = beamDataMap.get(b);
         if (module == null) {
-            laserDataMap.put(b, module = new LaserModule());
+            beamDataMap.put(b, module = new LaserModule());
         }
 //        float power = 0;
 //        for(int i=0;i<laserDataMap.get(b).laserDatas.size;i++) {
@@ -119,26 +119,26 @@ public class ConsumeBeam extends Consume {
     public void accrue(Building b,BeamData data){
         if(!canConsume(data))return;
         if (b.dead) {
-            laserDataMap.remove(b);
+            beamDataMap.remove(b);
             return;
         }
-        LaserModule module = laserDataMap.get(b);
+        LaserModule module = beamDataMap.get(b);
         if (module == null) {
-            laserDataMap.put(b, module = new LaserModule());
+            beamDataMap.put(b, module = new LaserModule());
         }
         module.cachePower += data.power;
     }
 
     public float getLaserPower(Building b){
         if(b.dead){
-            laserDataMap.remove(b);
+            beamDataMap.remove(b);
             return 0;
         }
-        if(laserDataMap.get(b)==null) {
-            laserDataMap.put(b,new LaserModule());
+        if(beamDataMap.get(b)==null) {
+            beamDataMap.put(b,new LaserModule());
             return 0;
         }
-        return laserDataMap.get(b).power;
+        return beamDataMap.get(b).power;
 
     }
     @Override
@@ -155,9 +155,9 @@ public class ConsumeBeam extends Consume {
     public static void free(){
         for (int i=0;i<allConsume.size;i++) {
             ConsumeBeam c = allConsume.get(i);
-            for (var e : c.laserDataMap.keys()) {
+            for (var e : c.beamDataMap.keys()) {
                 if (e!=null&&(e.dead || !e.isValid())) {
-                    c.laserDataMap.remove(e);
+                    c.beamDataMap.remove(e);
                 }
             }
         }

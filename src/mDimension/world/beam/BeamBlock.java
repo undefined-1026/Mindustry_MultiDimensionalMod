@@ -11,6 +11,7 @@ import mindustry.world.meta.BlockFlag;
 
 
 public class BeamBlock extends Block {
+    public boolean particle = false;
     public BeamBlock(String name){
         super(name);
         solid = false;
@@ -23,7 +24,7 @@ public class BeamBlock extends Block {
     public boolean handleBeam(BeamEntity entity,Building b){return false;}
     public class BeamBlockBuild extends Building{
         public boolean handleBeam(BeamEntity entity){
-            return BeamBlock.this.handleBeam(entity,this);
+            return particle == entity.beam.isParticle && BeamBlock.this.handleBeam(entity,this);
         }
     }
 

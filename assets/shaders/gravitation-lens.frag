@@ -18,9 +18,10 @@ void main() {
         vec2 dir = pos-uv;
         float dst = length(dir);
         if(dst>rad || dst < 0.01)continue;
-        float inf = smoothstep(rad,0.0,dst) * str;
-        totalOffset += normalize(dir) * inf * 0.1;
+        float inf = smoothstep(rad,0.0,dst) * str * 0.1;
+        inf = min(inf,dst);
+        totalOffset += normalize(dir) * inf;
     }
-    vec2 resUv = clamp((uv+totalOffset-u_campos)/u_resolution,0.0,1.0);
+    vec2 resUv = (uv+totalOffset-u_campos)/u_resolution;
     gl_FragColor = texture2D(u_texture,resUv);
 }

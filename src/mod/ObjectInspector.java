@@ -15,8 +15,10 @@ import arc.struct.*;
 
 import arc.util.*;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.entities.Effect;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.Item;
@@ -1070,6 +1072,8 @@ public class ObjectInspector extends Table {
             ScriptableObject.putProperty(scope, "Liquids", Context.javaToJS(Liquids.class, scope));
             ScriptableObject.putProperty(scope, "Sound", Context.javaToJS(Sound.class, scope));
             ScriptableObject.putProperty(scope, "Sounds", Context.javaToJS(Sounds.class, scope));
+            ScriptableObject.putProperty(scope, "Fx", Context.javaToJS(Fx.class, scope));
+            ScriptableObject.putProperty(scope, "Effect", Context.javaToJS(Effect.class, scope));
 
             return cx.evaluateString(scope, script, "field-script", 1);
         } finally {

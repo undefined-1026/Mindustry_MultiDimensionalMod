@@ -1,7 +1,7 @@
 package mDimension.content;
 
 import arc.graphics.Color;
-import mDimension.world.data.SeedItem;
+import mDimension.world.type.SeedItem;
 import mindustry.type.Item;
 
 public class MD_Items {

@@ -1,6 +1,7 @@
 package mDimension.entity.bullet;
 
 import arc.graphics.Color;
+import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
@@ -38,7 +39,12 @@ public class RefractedLaserBulletType extends BulletType {
     public float refractedRadius = 8 * 8f, length = 80f;
     public boolean repeatedHit = true;
     public boolean emit = false;
+
+    public boolean straight = false;
     public Effect LaserEffect = MD_Fx.RefractedLaser;
+    public Effect pointEffect = Fx.none;
+    public float pointEffectSpace = 10f;
+    public float pointEffectSpaceRand = 5f;
     public float laserStrokeMulti = 1f;
     public Color laserColor = Color.valueOf("FFE791");
     public int passBuilds = -1;
@@ -59,8 +65,14 @@ public class RefractedLaserBulletType extends BulletType {
 
         node = b;
         float sx = b.x,sy = b.y;
-        if (emit) {
-            float len = Mathf.len(b.aimX - b.x, b.aimY - b.y);
+        if (emit){
+            float len= Mathf.len(b.aimX - b.x, b.aimY - b.y);
+            if (straight) {
+                float ang = Angles.angle(b.x,b.y,b.aimX,b.aimY);
+                b.aimX = Angles.trnsx(ang,len);
+                b.aimY = Angles.trnsy(ang,len);
+            }
+
             if (passBuilds>0) {
                 float rlen = findPierceLength(b, passBuilds, laserAbsorb,length);
                 if(len > rlen){
@@ -73,6 +85,7 @@ public class RefractedLaserBulletType extends BulletType {
                 b.aimX = Tmp.v1.x;
                 b.aimY = Tmp.v1.y;
             }
+
             b.set(b.aimX, b.aimY);
             totalTarget.add(new TmpPos(b));  // 拷贝坐标，防止 Bullet 池化后 x/y 归零
         }
@@ -106,6 +119,14 @@ public class RefractedLaserBulletType extends BulletType {
             }
 
             totalTarget.add(target);
+            if (pointEffectSpace>0 && pointEffect!=Fx.none && pointEffect != null) {
+                Vec2 v = Tmp.v2.set(target.x()-nodePos.x,target.y()-nodePos.y).nor();
+                for(float len =pointEffectSpace+Mathf.random(pointEffectSpaceRand);
+                    len<Mathf.len(target.x()-nodePos.x,target.y()-nodePos.y);
+                    len+=pointEffectSpace+Mathf.random(pointEffectSpaceRand)){
+                    pointEffect.at(nodePos.x+v.x*len,nodePos.y+v.y*len);
+                }
+            }
             node = target;
             nodePos.set(target.x(), target.y());
             Damage.collidePoint(b, b.team, hitEffect, target.x(), target.y());

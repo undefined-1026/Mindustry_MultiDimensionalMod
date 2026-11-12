@@ -5,7 +5,7 @@ import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.util.Scaling;
 import arc.util.Strings;
-import mDimension.world.data.Beam;
+import mDimension.world.type.Beam;
 import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;

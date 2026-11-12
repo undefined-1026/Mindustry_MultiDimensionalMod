@@ -1,4 +1,4 @@
-package mDimension.world.data;
+package mDimension.world.type;
 
 import arc.func.Cons;
 import arc.func.Cons2;

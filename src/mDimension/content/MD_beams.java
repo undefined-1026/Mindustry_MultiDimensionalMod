@@ -1,7 +1,7 @@
 package mDimension.content;
 
 import arc.graphics.Color;
-import mDimension.world.data.Beam;
+import mDimension.world.type.Beam;
 
 public class MD_beams {
     public static Beam

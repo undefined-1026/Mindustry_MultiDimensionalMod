@@ -501,21 +501,21 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
 
 
         //wang ge
-        tech(37, MD_environment.inlayMetalTiles4,Blocks.metalTiles8, MD_environment.inlayMetalTiles4.asFloor().wall);
+        tech(33, MD_environment.inlayMetalTiles4,Blocks.metalTiles7, MD_environment.inlayMetalTiles4.asFloor().wall);
 
         pass((x, y) -> {
             //random moss
-            if(floor == Blocks.sporeMoss){
+            if(floor == MD_environment.yellow_ice){
                 if(Math.abs(0.5f - noise(x - 90, y, 4, 0.8, 65)) > 0.02){
-                    floor = Blocks.moss;
+                    floor = MD_environment.yellow_ice_snow;
                 }
             }
 
             //tar
-            if(floor == Blocks.darksand){
+            if(floor == MD_environment.darkRedStone || floor == MD_environment.darkDenseRedStone ){
                 if(Math.abs(0.5f - noise(x - 40, y, 2, 0.7, 80)) > 0.25f &&
                         Math.abs(0.5f - noise(x, y + sector.id*10, 1, 1, 60)) > 0.41f && !(roomseq.contains(r -> Mathf.within(x, y, r.x, r.y, 30)))){
-                    floor = Blocks.tar;
+                    floor = MD_environment.crystallization_oil;
                 }
             }
 
@@ -608,39 +608,6 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
                     part = bases.forResource(tile.floor().liquidDrop).getFrac(range);
                 }else if(rand.chance(0.05)){ //ore-less parts are less likely to occur.
                     part = bases.parts.getFrac(range);
-                }
-
-                //actually place the part
-                if(part != null && BaseGenerator.tryPlace(part, x, y, Team.derelict, rand, (cx, cy) -> {
-                    Tile other = tiles.getn(cx, cy);
-                    if(other.floor().hasSurface()){
-                        other.setOverlay(Blocks.oreScrap);
-                        for(int j = 1; j <= 2; j++){
-                            for(Point2 p : Geometry.d8){
-                                Tile t = tiles.get(cx + p.x*j, cy + p.y*j);
-                                if(t != null && t.floor().hasSurface() && rand.chance(j == 1 ? 0.4 : 0.2)){
-                                    t.setOverlay(Blocks.oreScrap);
-                                }
-                            }
-                        }
-                    }
-                })){
-                    placed ++;
-
-                    int debrisRadius = Math.max(part.schematic.width, part.schematic.height)/2 + 3;
-                    Geometry.circle(x, y, tiles.width, tiles.height, debrisRadius, (cx, cy) -> {
-                        float dst = Mathf.dst(cx, cy, x, y);
-                        float removeChance = Mathf.lerp(0.05f, 0.5f, dst / debrisRadius);
-
-                        Tile other = tiles.getn(cx, cy);
-                        if(other.build != null && other.isCenter()){
-                            if(other.team() == Team.derelict && rand.chance(removeChance)){
-                                other.remove();
-                            }else if(rand.chance(0.5)){
-                                other.build.health = other.build.health - rand.random(other.build.health * 0.9f);
-                            }
-                        }
-                    });
                 }
             }
         }
@@ -758,22 +725,29 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
     //Override basic;
     public void tech(int secSize,Block floor1, Block floor2, Block wall){
 
-        pass((x, y) -> {
-            if(!floor.asFloor().hasSurface()) return;
-
-            int mx = x % secSize, my = y % secSize;
-            int sclx = x / secSize, scly = y / secSize;
-            if(noise(sclx, scly, 0.2f, 1f) > 0.63f && noise(sclx, scly + 999, 200f, 1f) > 0.6f && (mx == 0 || my == 0 || mx == secSize - 1 || my == secSize - 1)){
-                if(rand.chance(noise(x + 0x231523, y, 40f, 1f))){
-                    floor = floor1;
-                    if(Mathf.dst(mx, my, secSize/2, secSize/2) > secSize/2f + 2){
-                        floor = floor2;
+        pass((ox, oy) -> {
+            if (!floor.asFloor().hasSurface()) return;
+            for (int i=0;i<9;i++) {
+                var p = i<8?Geometry.d8(i):Tmp.p1.set(0,0);
+                int x = ox+p.x;
+                int y = oy+p.y;
+                int mx = x % secSize, my = y % secSize;
+                int sclx = x / secSize, scly = y / secSize;
+                var f = p.x == 0 && p.y == 0?floor1:floor2;
+                if (noise(sclx, scly, 0.2f, 1f) > 0.63f && noise(sclx, scly + 999, 200f, 1f) > 0.6f
+                        && (mx == 0 || my == 0)) {
+                    if (rand.chance(noise(x + 0x231523, y, 40f, 1f))) {
+                        floor = f;
+                        if (Mathf.dst(mx, my, secSize / 2, secSize / 2) > secSize / 2f + 2) {
+                            floor = floor2;
+                        }
                     }
-                }
 
-                if(block.solid && rand.chance(0.7)){
-                    block = wall;
-                    ore = Blocks.air;
+                    if (block.solid && rand.chance(0.7)) {
+                        block = wall;
+                        ore = Blocks.air;
+                    }
+
                 }
             }
         });

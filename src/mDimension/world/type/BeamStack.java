@@ -1,18 +1,16 @@
-package mDimension.world.data;
-
-/**激光数据类*/
-public class BeamData {
+package mDimension.world.type;
+/**beam data class*/
+public class BeamStack {
     public int length;
     public int wavelengthLevel;
     public float power = 10f;
     public Beam beam;
-    public BeamData(Beam l){
+    public BeamStack(Beam l){
         this.length = l.length;
         this.wavelengthLevel = l.energyLevel;
         this.beam = l;
     }
-
-    public BeamData(Beam l, float power){
+    public BeamStack(Beam l, float power){
         this.length = l.length;
         this.wavelengthLevel = l.energyLevel;
         this.power = power;

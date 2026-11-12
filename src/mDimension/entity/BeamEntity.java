@@ -14,8 +14,9 @@ import mDimension.MDimensionMod;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.content.MD_beams;
 import mDimension.world.beam.BeamBlock;
-import mDimension.world.data.BeamData;
-import mDimension.world.data.Beam;
+import mDimension.world.blocks.BeamConsumer;
+import mDimension.world.type.BeamStack;
+import mDimension.world.type.Beam;
 import mDimension.world.blocks.MD_BeamCrafter;
 import mindustry.Vars;
 import mindustry.content.Blocks;
@@ -52,7 +53,7 @@ public class BeamEntity implements Entityc, Drawc {
     public Seq<Building> passBuild = new Seq<Building>(6);
 
     public Beam beam = MD_beams.near_infrared_light;
-    public BeamData beamData;
+    public BeamStack beamData;
     public int step = 0;
     public int cycleLength = 0;
     public float cx,cy;
@@ -131,7 +132,7 @@ public class BeamEntity implements Entityc, Drawc {
                 }
                 continue;
             }
-            if (ConsumeBeam.getBeamConsume(onBuild.block).size != 0 && collision) {
+            if (onBuild.block.findConsumer(c->c instanceof ConsumeBeam)!=null&& collision) {
                 end(cx,cy,rotation);
                 isBlocked = true;
                 for (ConsumeBeam c : ConsumeBeam.getBeamConsume(onBuild.block)) {
@@ -139,6 +140,15 @@ public class BeamEntity implements Entityc, Drawc {
                     c.accrue(onBuild, beamData);
                 }
                 break;
+            }
+            if (onBuild instanceof BeamConsumer b && collision) {
+                if(b.acceptBeam(beam, beamData.power)){
+                    b.handleBeam(beam, beamData.power);
+                }
+                if(b.blockBeam(beam)){
+                    isBlocked = true;
+                    break;
+                }
             }
 
             if (onSolid(cx, cy) && collision) {
@@ -179,7 +189,7 @@ public class BeamEntity implements Entityc, Drawc {
             tcb.crafterLasers[id] = this;
         }
         this.launchRotation = rotation;
-        this.beamData = new BeamData(beam,0);
+        this.beamData = new BeamStack(beam,0);
 
         add();
     }

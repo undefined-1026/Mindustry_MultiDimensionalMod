@@ -7,7 +7,7 @@ import mDimension.content.MD_beams;
 import mDimension.entity.BeamEntity;
 import mDimension.meta.MD_StatValues;
 import mDimension.tool.MD_Edge;
-import mDimension.world.data.Beam;
+import mDimension.world.type.Beam;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.world.blocks.production.GenericCrafter;

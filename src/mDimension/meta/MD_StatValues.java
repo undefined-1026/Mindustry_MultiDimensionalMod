@@ -9,7 +9,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Nullable;
 import arc.util.Scaling;
 import arc.util.Strings;
-import mDimension.world.data.Beam;
+import mDimension.world.type.Beam;
 import mindustry.type.Liquid;
 import mindustry.ui.Styles;
 import mindustry.world.meta.StatUnit;

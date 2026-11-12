@@ -6,8 +6,8 @@ import arc.struct.Seq;
 import arc.util.Strings;
 import mDimension.content.MD_beams;
 import mDimension.meta.MD_StatValues;
-import mDimension.world.data.BeamData;
-import mDimension.world.data.Beam;
+import mDimension.world.type.BeamStack;
+import mDimension.world.type.Beam;
 import mindustry.content.Items;
 import mindustry.gen.Building;
 import mindustry.ui.Bar;
@@ -61,7 +61,6 @@ public class ConsumeBeam extends Consume {
     }
     @Override
     public void apply(Block block) {
-        //region Bar
         block.addBar(inputBeam == null?"beam-"+minWavelength+"-"+maxWavelength:"beam-"+inputBeam.name,e->
             new Bar(
                     ()-> inputBeam.localizedName+" "+Core.bundle.format("bar.laserpower", Strings.fixed(getLaserPower(e),1), Strings.fixed(requiredPower,1)),
@@ -69,8 +68,9 @@ public class ConsumeBeam extends Consume {
                     ()->getLaserPower(e)/requiredPower
             )
         );
-        //endregion
     }
+
+
 
     public static Seq<ConsumeBeam> getBeamConsume(Block block){
         out.clear();
@@ -110,13 +110,13 @@ public class ConsumeBeam extends Consume {
         return Math.min(maxEfficiency, module.power/requiredPower);
     }
 
-    public boolean canConsume(BeamData date){
+    public boolean canConsume(BeamStack date){
         return (minWavelength < 0 || minWavelength <= date.wavelengthLevel) &&
                 (maxWavelength < 0 || date.wavelengthLevel <= maxWavelength) &&
                 (inputBeam == null || inputBeam.equals(date.beam));
     }
 
-    public void accrue(Building b,BeamData data){
+    public void accrue(Building b, BeamStack data){
         if(!canConsume(data))return;
         if (b.dead) {
             beamDataMap.remove(b);

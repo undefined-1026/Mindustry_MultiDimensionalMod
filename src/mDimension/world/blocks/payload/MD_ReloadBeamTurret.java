@@ -1,7 +1,7 @@
 package mDimension.world.blocks.payload;
 
 import arc.math.Mathf;
-import mDimension.world.blocks.MD_BeamTurret;
+import mDimension.world.blocks.beam.MD_BeamTurret;
 import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;

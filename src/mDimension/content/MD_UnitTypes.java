@@ -26,7 +26,6 @@ import mDimension.world.weapons.OverdriveWeapon;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.FlyingFollowAI;
-import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
@@ -49,10 +48,10 @@ import mDimension.entity.ability.*;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static mDimension.content.MD_Fx.v;
-import static mDimension.content.MD_blocks.setDefault;
+import static mDimension.content.building.MD_blocks.setDefault;
 import static mindustry.Vars.tilesize;
 
-import static mDimension.content.MD_blocks.modname;
+import static mDimension.content.building.MD_blocks.modname;
 import mDimension.world.weapons.*;
 import mindustry.type.weapons.PointDefenseWeapon;
 

@@ -4,14 +4,14 @@ import arc.struct.Seq;
 
 import static mDimension.content.MD_Items.*;
 import static mDimension.content.MD_Liquids.*;
-import static mDimension.content.MD_blocks.*;
+import static mDimension.content.building.MD_blocks.*;
 import static mDimension.content.MD_UnitTypes.*;
 import static mDimension.content.MD_SectorPresets.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
 import static mindustry.game.Objectives.*;
 
-import mindustry.content.Items;
+import mDimension.content.building.MD_blocks;
 import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Objectives;

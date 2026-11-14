@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.Stack;
 
 import static mindustry.Vars.ui;
-import static mDimension.content.MD_blocks.modname;
+import static mDimension.content.building.MD_blocks.modname;
 public class ObjectInspector extends Table {
     private static final float panelWidth = 420f;
     private static final float panelHeight = 520f;

@@ -1,22 +1,24 @@
-package mDimension.world.blocks;
+package mDimension.world.blocks.beam;
 
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import mDimension.entity.BeamEntity;
-import mDimension.world.beam.BeamBlock;
+import mDimension.world.blocks.Slant;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 
-public class MD_BeamDeflector extends BeamBlock implements Slant{
+public class MD_BeamDeflector extends BeamBlock implements Slant {
     public boolean canDeflectorParticle = false;
     public Vec2 afterRotation = new Vec2(1,0);
     public static Vec2 v = new Vec2();
     public boolean diagonalFlip = false;
     public DrawBlock drawer = new DrawDefault();
+    public boolean guidance = true;
+    public boolean polarizing = false;
 
     public MD_BeamDeflector(String name){
         super(name);
@@ -57,20 +59,20 @@ public class MD_BeamDeflector extends BeamBlock implements Slant{
         }else slantFlipRotation(plan,x);
     }
     @Override
-    public boolean handleBeam(BeamEntity beam, Building b){
-
-        if(beam.step+1<=beam.cycleLength && b.enabled){
+    public boolean handleBeam(BeamEntity e, Building b){
+        if(!b.enabled)return false;
+        if(guidance)if(e.step+1<=e.cycleLength){
             rotateVec(afterRotation,v,b.rotation);
-            if(v.x != beam.rotation.x || v.y != beam.rotation.y){
-                beam.node(b.x,b.y);
-                beam.passBuild.add(b);
-                beam.cycleLength =(int) Math.max(
-                        (beam.cycleLength-beam.step)*(beam.rotation.len()/v.len())+beam.step
+            if(v.x != e.rotation.x || v.y != e.rotation.y){
+                e.node(b.x,b.y);
+                e.passBuild.add(b);
+                e.cycleLength =(int) Math.max(
+                        (e.cycleLength-e.step)*(e.rotation.len()/v.len())+e.step
                         ,0);
-                beam.rotation.set(v);
-                if( beam.cycleLength-beam.step == 0){
-                    beam.cx+=v.x*5;
-                    beam.cy+=v.y*5;
+                e.rotation.set(v);
+                if( e.cycleLength-e.step == 0){
+                    e.cx+=v.x*5;
+                    e.cy+=v.y*5;
                     return true;
                 }
             }
@@ -88,6 +90,11 @@ public class MD_BeamDeflector extends BeamBlock implements Slant{
 //                    break;
 //                }
 //            }
+        }
+        if(polarizing){
+            e.node(e.cx,e.cy);
+            e.collision = !e.collision;
+            e.node(e.cx,e.cy);
         }
         return false;
     }

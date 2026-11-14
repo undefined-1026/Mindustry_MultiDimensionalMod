@@ -60,7 +60,7 @@ public class MD_Items {
             hardness = 1;
         }};
         polymorphic_crystal = new Item("polymorphic-crystal",Color.valueOf("F8D09E")){{
-            frames = 10;
+            frames = 3;
             frameTime = 20;
             transitionFrames = 15;
             charge = 1.5f;

@@ -39,7 +39,6 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import mindustry.world.modules.ItemModule;
 
-import static mDimension.content.MD_blocks.modname;
 import static mindustry.Vars.*;
 
 public class MD_UnitAssembler extends UnitAssembler {

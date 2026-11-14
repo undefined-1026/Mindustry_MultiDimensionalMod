@@ -1,4 +1,4 @@
-package mDimension.world.beam;
+package mDimension.world.blocks.beam;
 
 import arc.struct.EnumSet;
 import arc.util.Eachable;

@@ -1,20 +1,14 @@
 package mDimension.world.blocks;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Eachable;
-import mDimension.content.MD_blocks;
+import mDimension.content.building.MD_blocks;
 import mindustry.entities.units.BuildPlan;
-import mindustry.graphics.Layer;
 import mindustry.type.Item;
-import mindustry.type.Liquid;
 import mindustry.world.blocks.distribution.Sorter;
-
-import static mindustry.Vars.tilesize;
 
 public class MD_Sorter extends Sorter {
     public MD_Sorter(String name){

@@ -9,6 +9,7 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import mDimension.content.building.MD_blocks;
 import mDimension.core.MDRenderer;
 import mDimension.entity.EntityShield;
 import mDimension.entity.VisibleEffect;
@@ -18,7 +19,6 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Effect;
 
 import arc.graphics.Color;
-import mindustry.gen.Healthc;
 import mindustry.gen.Posc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
@@ -494,6 +494,18 @@ public class MD_Fx {
             v.trns(e.rotation+dr,(rand.random(6f)+3f)*e.finpow());
             Fill.poly(e.x+v.x,e.y+v.y,4,e.fout()*3f);
         }
+    }),
+
+    railShootColor = new Effect(20f,e->{
+        for(int o=0;o<2;o++) {
+            float scl = (1f-o*0.6f);
+            color(e.color, Color.white,o);
+            for (int i : Mathf.signs) {
+                Drawf.tri(e.x, e.y, e.fout() * 11f * scl, 70f* scl, e.rotation + 90f * i);
+                Drawf.tri(e.x, e.y, e.fout() * 8.5f * scl, 50* scl, e.rotation + 65f * i);
+            }
+        }
+        Drawf.tri(e.x,e.y,6.5f*e.fout(),18f,e.rotation);
     }),
 
     fluffrainHit = new Effect(20f,e->{
@@ -1014,6 +1026,19 @@ public class MD_Fx {
             randLenVectors(e.id, amount, e.finpow() * rad, e.rotation, 360f, (x, y) -> {
                 float ang = Mathf.angle(x, y);
                 lineAngle(e.x + x, e.y + y, ang, e.fout() * lineLen + 1f);
+            });
+        });
+    }
+
+    public static Effect charge(float time,float size,int lineAmount,Color color){
+        return new Effect(time+3f, e -> {
+            color(color, Color.white,e.fin()*0.8f);
+            stroke(e.fin() *1f);
+            Lines.circle(e.x, e.y, 2f + e.fout() * size*1.8f);
+            Fill.circle(e.x,e.y,size*e.fin());
+            stroke(e.fin() *1.5f);
+            randLenVectors(e.id, lineAmount, size*4f*e.fout(), (x, y) -> {
+                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * size*0.7f);
             });
         });
     }

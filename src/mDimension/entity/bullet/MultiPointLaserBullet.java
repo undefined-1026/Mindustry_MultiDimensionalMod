@@ -20,7 +20,7 @@ import mindustry.graphics.Trail;
 
 import java.util.Arrays;
 
-import static mDimension.content.MD_blocks.modname;
+import static mDimension.content.building.MD_blocks.modname;
 import static mindustry.Vars.headless;
 
 /**

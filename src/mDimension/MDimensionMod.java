@@ -2,10 +2,12 @@ package mDimension;
 import arc.Core;
 import arc.Events;
 import arc.util.Time;
+import mDimension.content.building.MD_blocks;
 import mDimension.core.MDRenderer;
 import mDimension.core.MDShaders;
 import mDimension.meta.MD_Stat;
 import mDimension.meta.MD_StatUnit;
+import mDimension.util.MDModStatus;
 import mDimension.world.MDEvents;
 import mindustry.Vars;
 import mindustry.game.EventType;
@@ -25,8 +27,8 @@ public class MDimensionMod extends Mod {
             Time.runTask(20, () -> {
                 BaseDialog welcome = new BaseDialog("Welcome to play Multidimensional");
                 welcome.cont.add("A new journey Let's begin").colspan(2).row();
-                welcome.cont.image(Core.atlas.find("mdimension-evil")).pad(10f);
-                welcome.cont.image(Core.atlas.find("mdimension-neuro")).pad(20f);
+                //welcome.cont.image(Core.atlas.find("mdimension-evil")).pad(10f);
+                //welcome.cont.image(Core.atlas.find("mdimension-neuro")).pad(20f);
                 Time.runTask(1, welcome::addCloseButton);
                 welcome.show();
             });
@@ -40,10 +42,10 @@ public class MDimensionMod extends Mod {
         MDShaders.init();
         MDRenderer.init();
         MDEvents.init();
-
         Events.on(EventType.ClientLoadEvent.class,e->{
             Core.app.post(()->{
                 Vars.ui.settings.graphics.sliderPref(BEAM_OPACITY,100,0,100,1,s->s+"%");
+                MDModStatus.init();
             });
         });
     }

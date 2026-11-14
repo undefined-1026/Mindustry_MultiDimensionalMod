@@ -1,4 +1,4 @@
-package mDimension.world.blocks;
+package mDimension.world.blocks.beam;
 
 import arc.Core;
 import arc.struct.ObjectFloatMap;
@@ -6,15 +6,19 @@ import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.util.Nullable;
 import arc.util.Strings;
+import mDimension.meta.MD_StatValues;
+import mDimension.world.blocks.BeamConsumer;
 import mDimension.world.type.Beam;
 import mindustry.entities.bullet.BulletType;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.meta.Stat;
 
 public class MD_BeamTurret extends Turret {
-    /**用 消耗子弹/装填倍数决定需要的激光功率*/
+    /**用 b.statLiquidConsumed/b.ammoMultiplier决定需要的激光功率*/
     public ObjectMap<Beam, BulletType> ammoTypes = new OrderedMap<>();
     public float minPowerOfBeam = 1f;
+    public float requiredPower = 10f;
     public MD_BeamTurret(String name) {
         super(name);
     }
@@ -30,7 +34,13 @@ public class MD_BeamTurret extends Turret {
             return ammoTypes.get(beam);
         };
     }
-
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.remove(Stat.ammoUse);
+        ammoTypes.each((l, b) -> b.statLiquidConsumed = requiredPower);
+        stats.add(Stat.ammo, MD_StatValues.beamAmmo(ammoTypes, false, false, null));
+    }
     @Override
     public void setBars() {
         super.setBars();
@@ -38,12 +48,11 @@ public class MD_BeamTurret extends Turret {
             var beam = en.key;
 
             addBar("beam-"+en.key.name,(MD_BeamTurretBuild e)-> {
-                        float power = e.ammoTypePower.get(beam, 0f);
                         float requiredPower = getRequiredPower(ammoTypes.get(beam));
                         return new Bar(
-                                () -> beam.localizedName + " " + Core.bundle.format("bar.laserpower", Strings.fixed(power, 1), Strings.fixed(requiredPower, 1)),
+                                () -> beam.localizedName + " " + Core.bundle.format("bar.laserpower", Strings.fixed(e.ammoTypePower.get(beam, 0f), 1), Strings.fixed(requiredPower, 1)),
                                 () -> beam.color,
-                                () -> power / requiredPower
+                                () -> e.ammoTypePower.get(beam, 0f) / requiredPower
                         );
                     }
             );
@@ -54,11 +63,11 @@ public class MD_BeamTurret extends Turret {
     public void ammo(Object... objects){
         ammoTypes = OrderedMap.of(objects);
     }
-    public class MD_BeamTurretBuild extends TurretBuild implements BeamConsumer{
+    public class MD_BeamTurretBuild extends TurretBuild implements BeamConsumer {
         public ObjectFloatMap<Beam> ammoTypePowerTmp = new ObjectFloatMap<>();
         public ObjectFloatMap<Beam> ammoTypePower = new ObjectFloatMap<>();
         public float beamPower = 0;
-        public BulletType ammoType;
+        public @Nullable BulletType ammoType;
         @Override
         public void handleBeam(Beam beam, float power) {
             ammoTypePowerTmp.put(beam,ammoTypePowerTmp.get(beam,0f) + power);
@@ -98,16 +107,21 @@ public class MD_BeamTurret extends Turret {
 
         /** @return whether the turret has ammo. */
         public boolean hasAmmo(){
-            //skip first entry if it has less than the required amount of ammo
-            return ammoType!=null;
+            return canConsume();
         }
 
         @Override
-        public float efficiencyScale() {
-            return Math.min(1f,beamPower/getRequiredPower(ammoType));
+        public boolean canConsume() {
+            return super.canConsume() && ammoType!=null && beamPower>0;
+        }
+
+        @Override
+        protected float baseReloadSpeed() {
+            return efficiency * Math.min(1f,beamPower/getRequiredPower(ammoType));
         }
     }
     float getRequiredPower(BulletType b){
-        return (float)this.ammoPerShot/b.ammoMultiplier;
+        if(b == null)return 0;
+        return requiredPower/b.ammoMultiplier;
     }
 }

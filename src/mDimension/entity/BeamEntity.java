@@ -1,6 +1,5 @@
 package mDimension.entity;
 
-import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.math.geom.Position;
@@ -10,10 +9,10 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.MDimensionMod;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.content.MD_beams;
-import mDimension.world.beam.BeamBlock;
+import mDimension.util.MDModStatus;
+import mDimension.world.blocks.beam.BeamBlock;
 import mDimension.world.blocks.BeamConsumer;
 import mDimension.world.type.BeamStack;
 import mDimension.world.type.Beam;
@@ -100,7 +99,9 @@ public class BeamEntity implements Entityc, Drawc {
     public void update() {
         this.strokeScl = scl();
 
-        if (!(owner instanceof MD_BeamCrafter.TestCrafterBuild tcb) || !owner.isValid() || !Arrays.asList(tcb.crafterLasers).contains(this)) {
+        if (!(owner instanceof MD_BeamCrafter.TestCrafterBuild tcb) || !owner.isValid()
+                || createId < 0 || createId >= tcb.crafterLasers.length
+                || tcb.crafterLasers[createId] != this) {
             remove();
             return;
         }
@@ -147,6 +148,7 @@ public class BeamEntity implements Entityc, Drawc {
                 }
                 if(b.blockBeam(beam)){
                     isBlocked = true;
+                    end(cx,cy,rotation);
                     break;
                 }
             }
@@ -166,9 +168,8 @@ public class BeamEntity implements Entityc, Drawc {
 
     @Override
     public void draw() {
-        float a = (Core.settings.getInt(MDimensionMod.BEAM_OPACITY,80)/100f);
         Draw.mixcol(beam.toColor,(strokeScl -1) * 2.5f);
-        if(warmup>0.01f) beam.beamDrawer.get(this,a);
+        if(warmup>0.01f) beam.beamDrawer.get(this, MDModStatus.beamOpacity);
         Draw.reset();
     }
 
@@ -190,7 +191,7 @@ public class BeamEntity implements Entityc, Drawc {
         }
         this.launchRotation = rotation;
         this.beamData = new BeamStack(beam,0);
-
+        this.createId = id;
         add();
     }
 

@@ -2,6 +2,7 @@ package mDimension.content;
 
 import arc.struct.Seq;
 import arc.struct.StringMap;
+import mDimension.content.building.MD_blocks;
 import mindustry.Vars;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;

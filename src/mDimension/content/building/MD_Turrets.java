@@ -1246,7 +1246,7 @@ public class MD_Turrets {
                         splashDamageRadius = 8*5;
                     }},
                     MD_beams.bright_light,new MD_RailBulletType(){{
-                        damage = 780;
+                        damage = 850;
                         length = 8*60;
                         rangeChange = 8*10;
                         chargeEffect = MD_Fx.charge(30,4f,22, MD_beams.bright_light.color);
@@ -1255,7 +1255,7 @@ public class MD_Turrets {
                             if(e.data instanceof Vec2 v){
                                 float space = 15;
                                 Vec2 t = MD_Fx.v2.set(v).sub(e.x,e.y);
-                                var nor = t.nor().scl(space);
+                                var nor = t.nor();
                                 float len = v.len();
                                 for(int i=0;i<3;i++){
                                     float scl = (1f-0.22f*i) * e.fout();
@@ -1271,7 +1271,7 @@ public class MD_Turrets {
                                     Lines.line(e.x,e.y,v.x,v.y);
 
                                     for(float j=space;j<len/2;j+=space){
-                                        float x = (j/(len/2));
+                                        float x = Math.min(1f,j/(len/2));
                                         float w = x*x*55;
                                         for(int s:Mathf.signs){
                                             Drawf.tri(e.x+j*nor.x,e.y+j*nor.y,11*scl,scl* w,e.rotation + 90*s);
@@ -1296,7 +1296,7 @@ public class MD_Turrets {
 
                         splashDamage = 200;
                         splashDamageRadius = 8*4;
-                        reloadMultiplier = 0.6f;
+                        reloadMultiplier = 0.65f;
                         ammoMultiplier = 3;
                         fragBullets = 1;
                         pierceFragCap = 1;
@@ -1306,6 +1306,7 @@ public class MD_Turrets {
                             refractedRadius = 8*10;
                             laserColor = hitColor = trailColor = MD_beams.bright_light.color;
                             splashDamage = 80;
+                            damage = 80;
                             splashDamageRadius = 8*2;
                             setDefault(this);
                         }};
@@ -1334,7 +1335,7 @@ public class MD_Turrets {
                 b.fragOnDespawn = false;
                 b.pierceCap = 3;
                 b.pierceDamageFactor = 0.3f;
-                b.hitColor = b.trailColor = k.color;
+                b.hitColor = b.trailColor = k.color.cpy().lerp(Color.white,0.4f);
                 shootEffect = MD_Fx.railShootColor;
             });
 

@@ -144,7 +144,7 @@ public class MD_Crafts {
             consumeItem(Items.silicon, 1);
             consume(new ConsumeBeam(15, MD_beams.near_infrared_light));
             outputItem = new ItemStack(MD_Items.light_ceramic, 1);
-            craftTime = 120f;
+            craftTime = 60f;
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
             consumePower(2.5f);
@@ -302,7 +302,6 @@ public class MD_Crafts {
                     new DrawRotation("-arrow", true)
             );
         }};
-
         diagonal_beam_merging_prism = new MD_BeamDeflector("diagonal-beam-merging-prism") {{
             requirements(Category.crafting, with(MD_Items.aluminium,10,MD_Items.germanium,15));
             afterRotation.set(1, 1);
@@ -314,14 +313,12 @@ public class MD_Crafts {
                     new DrawRotation("-arrow", 4)
             );
         }};
-
         beam_polarizing_filter = new MD_BeamDeflector("beam-polarizing-filter"){{
             requirements(Category.crafting, with(MD_Items.light_ceramic,10,MD_Items.germanium,15));
             guidance = false;
             polarizing = true;
             size = 1;
         }};
-
         beam_polarizing_prism = new MD_BeamDeflector("beam-polarizing-prism") {{
             requirements(Category.crafting, with(MD_Items.light_ceramic,15,MD_Items.germanium,20));
             size = 1;
@@ -332,7 +329,6 @@ public class MD_Crafts {
                     new DrawRotation("-arrow", true)
             );
         }};
-
         diagonal_beam_polarizing_prism = new MD_BeamDeflector("diagonal-beam-polarizing-prism") {{
             requirements(Category.crafting, with(MD_Items.light_ceramic,15,MD_Items.germanium,20));
             afterRotation.set(1, 1);

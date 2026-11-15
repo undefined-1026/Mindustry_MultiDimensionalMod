@@ -7,10 +7,11 @@ import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.bullet.RailBulletType;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 
-public class MD_RailBulletType extends BulletType {
+public class MD_RailBulletType extends RailBulletType {
     public Effect pierceEffect = Fx.hitBulletSmall, pointEffect = Fx.none, lineEffect = Fx.none;
     public Effect endEffect = Fx.none;
     public Effect endEffect2 = Fx.none;

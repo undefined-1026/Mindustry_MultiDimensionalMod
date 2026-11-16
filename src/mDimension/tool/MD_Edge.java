@@ -4,6 +4,7 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
+import arc.util.Tmp;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -47,12 +48,10 @@ public class MD_Edge {
 
     public static Vec2 transpose(Vec2 v, int r){
         if(r == 0)return v;
-        float x = v.x;
-        float y = v.y;
         switch (r){
-            case(1)-> v.set(-1*y,x);
-            case(2)-> v.set(-1*x,-1*y);
-            case(3)-> v.set(y,-1*x);
+            case(1)-> v.set(-1*v.y,v.x);
+            case(2)-> v.set(-1*v.x,-1*v.y);
+            case(3)-> v.set(v.y,-1*v.x);
         }
         return v;
     }

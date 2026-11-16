@@ -10,7 +10,6 @@ import arc.struct.Seq;
 import arc.util.pooling.Pool;
 import mindustry.Vars;
 import mindustry.game.EventType;
-import mindustry.graphics.Layer;
 
 import static arc.Core.settings;
 //*参考了eu**/
@@ -46,19 +45,15 @@ public class MDRenderer {
             holeBuffer = new FrameBuffer();
             well = new Well();
             well.init();
-            Events.run(EventType.Trigger.draw, this::advancedDraw);
+            Events.run(EventType.Trigger.draw, this::renderer);
         }
     }
     public static void init(){
         if(renderer == null) renderer = new MDRenderer();
     }
 
-    public void advancedDraw(){
-        if(settings.getBool("pixelate") || !settings.getBool("bloom")){
-            return;
-        }
-
-        addHole(8*160,8*160,50,10*8f);
+    public void renderer(){
+        BeamRenderer.renderer();
 
         Draw.draw(extBloomLayer-0.01f, () -> {
             Vars.renderer.bloom.capture();
@@ -70,29 +65,30 @@ public class MDRenderer {
 
         Draw.drawRange(212f,well::capture,well::render);
 
+        if(!settings.getBool("pixelate") && settings.getBool("bloom")){
+            Draw.draw(-12 ,()->{
+                invBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+                invBuffer.begin();
+                holeBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+                holeBuffer.begin();
+            });
 
-        Draw.draw(-12 ,()->{
-            invBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
-            invBuffer.begin();
-            holeBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
-            holeBuffer.begin();
-        });
-
-        Draw.drawRange(211,0.2f,()->{
-            invBuffer.end();
-            Vars.renderer.effectBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
-            Vars.renderer.effectBuffer.begin();
-        },()->{
-            MDShaders.invert.teakSample = invBuffer.getTexture();
-            Vars.renderer.effectBuffer.end();
-            Vars.renderer.effectBuffer.blit(MDShaders.invert);
-        });
-        Draw.draw(140.1f,()->{
-            holeBuffer.end();
-            MDShaders.hole.setOfSeq(holes);
-            holeBuffer.blit(MDShaders.hole);
-            renderer.holePool.freeAll(holes);
-        });
+            Draw.drawRange(211,0.2f,()->{
+                invBuffer.end();
+                Vars.renderer.effectBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+                Vars.renderer.effectBuffer.begin();
+            },()->{
+                MDShaders.invert.teakSample = invBuffer.getTexture();
+                Vars.renderer.effectBuffer.end();
+                Vars.renderer.effectBuffer.blit(MDShaders.invert);
+            });
+            Draw.draw(140.1f,()->{
+                holeBuffer.end();
+                MDShaders.hole.setOfSeq(holes);
+                holeBuffer.blit(MDShaders.hole);
+                renderer.holePool.freeAll(holes);
+            });
+        }
 
         holes.clear();
     }

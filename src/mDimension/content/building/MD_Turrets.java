@@ -1189,6 +1189,7 @@ public class MD_Turrets {
         refraction = new MD_BeamTurret("refraction"){{
             requirements(Category.turret,with(MD_Items.light_ceramic,220,MD_Items.germanium,350,MD_Items.ti_alloy,200,Items.silicon,300));
             scaledHealth = 250;
+            enableDrawStatus = true;
             size = 4;
             requiredPower = 120;
             range = 50*8f;
@@ -1198,7 +1199,7 @@ public class MD_Turrets {
             rotateSpeed = 2f;
             unitSort = UnitSorts.strongest;
             shoot.firstShotDelay = 30f;
-
+            coolant = new ConsumeCoolant(15/60f);
             ammo(
                     MD_beams.near_infrared_light,new MD_RailBulletType(){{
                         damage = 580;
@@ -1255,8 +1256,8 @@ public class MD_Turrets {
                             if(e.data instanceof Vec2 v){
                                 float space = 15;
                                 Vec2 t = MD_Fx.v2.set(v).sub(e.x,e.y);
+                                float len = t.len();
                                 var nor = t.nor();
-                                float len = v.len();
                                 for(int i=0;i<3;i++){
                                     float scl = (1f-0.22f*i) * e.fout();
                                     if(i==0) {
@@ -1272,7 +1273,7 @@ public class MD_Turrets {
 
                                     for(float j=space;j<len/2;j+=space){
                                         float x = Math.min(1f,j/(len/2));
-                                        float w = x*x*55;
+                                        float w = (x-1)*(x-1)*55;
                                         for(int s:Mathf.signs){
                                             Drawf.tri(e.x+j*nor.x,e.y+j*nor.y,11*scl,scl* w,e.rotation + 90*s);
                                         }
@@ -1364,7 +1365,6 @@ public class MD_Turrets {
         crest = new MD_PayloadTurret("crest"){{
             scaledHealth = 440;
             squareSprite = false;
-            outlineColor = Pal.darkOutline;
             unitSort = UnitSorts.strongest;
             requirements(Category.turret,with(
                     MD_Items.ti_alloy,800,
@@ -1390,7 +1390,8 @@ public class MD_Turrets {
                         height = 43f;
                         lifetime = 16f;
                         hitSize = 22f;
-                        knockback = 10f;
+                        knockback = 35f;
+                        impact = true;
                         despawnEffect = new MultiEffect(MD_Fx.distortPow(25,20*8,5*8,25),MD_Fx.starExplosionBig, MD_Fx.spikeExplosion);
                         hitEffect = new MultiEffect(MD_Fx.spikeHit, MD_Fx.spikeHitRotation);
 
@@ -1445,7 +1446,6 @@ public class MD_Turrets {
             shootEffect = new MultiEffect(MD_Fx.crestShoot, MD_Fx.crestShootFlame);
             ammoUseEffect = MD_Fx.casingCrest;
             drawer = new DrawTurret("steady-state-"){{
-
                 float haloY = -15f;
                 var haloProgress = DrawPart.PartProgress.warmup.delay(0.3f);
                 Color haloColor = c("F2F8FF");

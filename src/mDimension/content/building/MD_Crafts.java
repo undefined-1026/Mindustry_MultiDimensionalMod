@@ -428,75 +428,54 @@ public class MD_Crafts {
         }};
         //endregion
         //region infrared_laser 激光发生器
-        infrared_laser = new MD_BeamCrafter("infrared-laser") {{
+        infrared_laser = new MD_BeamLaunch("infrared-laser") {{
             requirements(Category.crafting, with(Items.silicon,30,MD_Items.germanium,50));
-            craftPos = new Vec2[]{
-                    new Vec2(4, -4),
-                    new Vec2(-4, 4)
+            beams = new Object[]{
+                    MD_beams.near_infrared_light,4,-4,1,0,
+                    MD_beams.near_infrared_light,-4,4,0,1
             };
-            craftRotation = new Vec2[]{
-                    new Vec2(1, 0),
-                    new Vec2(0, 1)
-            };
-            diagonalFilp = true;
+            diagonal = true;
             consumePower(2f);
-            beam = MD_beams.near_infrared_light;
             size = 2;
             beamPower = 10f;
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
-        ultraviolet_laser = new MD_BeamCrafter("ultraviolet-laser") {{
+        ultraviolet_laser = new MD_BeamLaunch("ultraviolet-laser") {{
             requirements(Category.crafting, with());
-            craftPos = new Vec2[]{
-                    new Vec2(4, -4),
-                    new Vec2(-4, 4)
-            };
-            craftRotation = new Vec2[]{
-                    new Vec2(1, 1),
-                    new Vec2(1, 1)
+            beams = new Object[]{
+                    MD_beams.ultraviolet_light,4,-4,1,1,
+                    MD_beams.ultraviolet_light,-4,4,1,1
             };
             consumePower(3f);
-            diagonalFilp = true;
-            beam = MD_beams.ultraviolet_light;
+            diagonal = true;
             size = 2;
             beamPower = 6f;
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
-        bright_light_laser = new MD_BeamCrafter("bright-light-laser") {{
+        bright_light_laser = new MD_BeamLaunch("bright-light-laser") {{
             requirements(Category.crafting, with(Items.silicon,50,MD_Items.light_ceramic,15,MD_Items.germanium,80));
-            craftPos = new Vec2[]{
-                    new Vec2(4, -4),
-                    new Vec2(-4, 4)
-            };
-            craftRotation = new Vec2[]{
-                    new Vec2(1, 1),
-                    new Vec2(1, 1)
+            beams = new Object[]{
+                    MD_beams.bright_light,4,-4,1,1,
+                    MD_beams.bright_light,-4,4,1,1
             };
             consumePower(1f);
             craftTime = 330;
             consumeItem(MD_Items.light_ceramic);
-            diagonalFilp = true;
-            beam = MD_beams.bright_light;
+            diagonal = true;
             size = 2;
             beamPower = 10f;
             drawer = new DrawMulti(new DrawRegion(), new DrawRotation("-top", 4));
         }};
 
-        nihility_exciter = new MD_BeamCrafter("nihility-exciter") {{
+        nihility_exciter = new MD_BeamLaunch("nihility-exciter") {{
             requirements(Category.crafting, with());
-            craftPos = new Vec2[]{
-                    new Vec2(-4, 4),
-                    new Vec2(4, 4),
-                    new Vec2(-4, -4),
-                    new Vec2(4, -4)
+            beams = new Object[]{
+                    MD_beams.nihility_light,4,-4,1,0,
+                    MD_beams.nihility_light,4,4,1,0,
+                    MD_beams.nihility_light,-4,4,-1,0,
+                    MD_beams.nihility_light,-4,-4,-1,0
             };
-            craftRotation = new Vec2[]{
-                    new Vec2(0, 1),
-                    new Vec2(0, 1),
-                    new Vec2(0, -1),
-                    new Vec2(0, -1)
-            };
-            beam = MD_beams.nihility_light;
+
             beamPower = 40f;
             size = 2;
             rotateDraw = false;

@@ -22,7 +22,6 @@ public class MD_BeamDeflector extends BeamBlock implements Slant {
 
     public MD_BeamDeflector(String name){
         super(name);
-        rotate = true;
         rotateDraw = false;
     }
 
@@ -34,6 +33,7 @@ public class MD_BeamDeflector extends BeamBlock implements Slant {
     @Override
     public void load() {
         super.load();
+        rotate = guidance;
         drawer.load(this);
     }
 

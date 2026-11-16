@@ -50,11 +50,11 @@ public class MD_Payloads {
             moveForce = 200;
             health = 400;
         }};
-        payload_processing_platform = new PayloadPlatform("payload-processing-platform"){{
-            requirements(Category.units,with(Items.graphite,50, MD_Items.aluminium,80));
-            size = 4;
-            regionSuffix = "-plat";
-        }};
+//        payload_processing_platform = new PayloadPlatform("payload-processing-platform"){{
+//            requirements(Category.units,with(Items.graphite,50, MD_Items.aluminium,80));
+//            size = 4;
+//            regionSuffix = "-plat";
+//        }};
         eigen_factory = new UnitFactory("infantry-factory"){{
             requirements(Category.units, with(Items.silicon, 150, MD_Items.aluminium, 180, Items.graphite, 120));
             plans = Seq.with(
@@ -185,15 +185,15 @@ public class MD_Payloads {
             regionSuffix = "-assembler";
         }};
 
-        shaping_assembler = new PayloadPlatformConstructor("shaping-assembler"){{
-            requirements(Category.units,BuildVisibility.sandboxOnly, with(Items.silicon,120, MD_Items.al_alloy,80));
-            size = 2;
-            consumeItems(with(Items.silicon,2, MD_Items.al_alloy,1));
-            consumePower(1.5f);
-            addUpgrade(MD_UnitTypes.captive, MD_UnitTypes.zircon,30*60f);
-            addUpgrade(MD_UnitTypes.shimmer, MD_UnitTypes.firefly,35*60f);
-            addUpgrade(MD_UnitTypes.mouse, MD_UnitTypes.coyote,40*60f);
-        }};
+//        shaping_assembler = new PayloadPlatformConstructor("shaping-assembler"){{
+//            requirements(Category.units,BuildVisibility.sandboxOnly, with(Items.silicon,120, MD_Items.al_alloy,80));
+//            size = 2;
+//            consumeItems(with(Items.silicon,2, MD_Items.al_alloy,1));
+//            consumePower(1.5f);
+//            addUpgrade(MD_UnitTypes.captive, MD_UnitTypes.zircon,30*60f);
+//            addUpgrade(MD_UnitTypes.shimmer, MD_UnitTypes.firefly,35*60f);
+//            addUpgrade(MD_UnitTypes.mouse, MD_UnitTypes.coyote,40*60f);
+//        }};
         //endregion
     }
 }

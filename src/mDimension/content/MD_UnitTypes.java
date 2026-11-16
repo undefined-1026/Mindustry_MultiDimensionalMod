@@ -758,6 +758,9 @@ public class MD_UnitTypes {
                     homingPower = 0.055f;
                     homingRange = 6*8f;
                     lifetime = 20/35f * 60f;
+                    setDefaults = false;
+                    despawnHit = false;
+                    fragOnDespawn = false;
                     width = 10f;
                     height = 16f;
                     trailColor = hitColor = backColor = Color.valueOf("FFD1C9");
@@ -799,21 +802,20 @@ public class MD_UnitTypes {
             armor = 6f;
             hitSize = 17;
             softShadowScl = 0.6f;
-            engineSize = 0;
-            engineOffset = 0;
+            engineSize = 3.5f;
+            engineOffset = 8.2f;
             itemCapacity = 60;
             lowAltitude = false;
             setEnginesMirror(
-                    new UnitEngine(3, -8, 2.5f, -45f),
-                    new UnitEngine(11, -8, 2f, -45f)
+                    new UnitEngine(4, -8, 3f, -90)
             );
             range = 20*8f;
             weapons.addAll(
                     new Weapon(this.name +"-weapon"){{
-                        x = 44/4f;
-                        y = -8/4f;
+                        x = 48/4f;
+                        y = -6/4f;
                         layerOffset = -0.01f;
-                        reload = 80;
+                        reload = 65;
                         mirror = true;
                         shootCone = 5f;
                         shootY = 3f;
@@ -878,43 +880,16 @@ public class MD_UnitTypes {
                                     Lines.line(e.x, e.y, v.x, v.y);
                                 });
                             });
-                        }};
-                    }},
-                    new Weapon(){{
-                        x=0;
-                        y=6f;
-                        shootY = 0;
-                        mirror = false;
-                        minWarmup = 0.8f;
-                        shootCone = 361f;
-                        reload = 150;
-                        shootSound = Sounds.shootMissilePlasma;
-                        shootSoundVolume = 1;
-                        parts.add(new HaloPart(){{
-                            sides = 24;
-                            radiusTo = 4f;
-                            haloRadius = 0;
-                            shapes = 1;
-                            radius = 0;
-                            layer = Layer.effect;
-                            color = Color.valueOf("FFD1C9");
-                            x=y=0;
-                            progress = PartProgress.warmup.mul(PartProgress.reload.inv()).delay(0.1f);
-                        }});
-                        bullet = new RefractedLaserBulletType(){{
-                            laserColor = Color.valueOf("FFB5A8");
-                            setDefault(this);
-                            shootEffect = smokeEffect = Fx.none;
-                            emit = true;
-                            damage = 200;
-                            length = 13*8f;
-                            laserStrokeMulti = 0.7f;
-                            repeatedHit = false;
-                            pierceCap = 8;
-                            passBuilds = 1;
+                            pierceFragCap = 1;
+                            fragBullets = 1;
+                            fragBullet = new RefractedLaserBulletType(){{
+                                laserStrokeMulti = 0.6f;
+                                damage = 30;
+                                pierceCap = 3;
+                            }};
                         }};
                     }}
-            );
+                    );
         }};
         burst = new DepicilonUnitType("burst"){{
 

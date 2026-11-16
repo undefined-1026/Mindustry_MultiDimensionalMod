@@ -1,16 +1,20 @@
 package mDimension.world.blocks;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
+import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.content.MD_Fx;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Building;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.ui.MultiReqImage;
@@ -22,6 +26,8 @@ import mindustry.world.consumers.Consume;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
+
+import static mindustry.Vars.tilesize;
 
 public class MD_PayloadTurret extends Turret {
     public ObjectMap<UnlockableContent, BulletType> ammoTypes = new OrderedMap<>();
@@ -59,6 +65,25 @@ public class MD_PayloadTurret extends Turret {
         stats.remove(Stat.itemCapacity);
         stats.add(Stat.ammo, StatValues.ammo(ammoTypes, true));
         stats.add(Stat.ammoCapacity, maxAmmo / ammoPerShot, StatUnit.shots);
+    }
+
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid){
+        super.drawPlace(x, y, rotation, valid);
+        int count=0;
+        for(var e:ammoTypes){
+            float range = this.range;
+            if(e.value.rangeChange!=0){
+                range+=e.value.rangeChange;
+                Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.placing);
+            }
+            for (int j = 0; j < 4; j++) {
+                float ang = (-Time.time*0.3f + count * 90f / ammoTypes.size + j*90f + 360f)%360f;
+                var v = Tmp.v2.trns(ang,range).add(x * tilesize + offset, y * tilesize + offset);
+                Draw.rect(e.key.fullIcon,v.x,v.y,16,16,ang-90f);
+            }
+            count++;
+        }
     }
 
     @Override

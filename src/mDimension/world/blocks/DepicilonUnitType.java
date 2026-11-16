@@ -1,5 +1,6 @@
 package mDimension.world.blocks;
 
+import arc.graphics.Color;
 import mindustry.gen.TankUnit;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Pal;
@@ -11,7 +12,7 @@ public class DepicilonUnitType extends UnitType {
     public DepicilonUnitType(String name){
         super(name);
         constructor = UnitEntity::create;
-        outlineColor = Pal.darkOutline;
+        outlineColor = Color.valueOf("2D2D2D");
         envDisabled = Env.space;
         researchCostMultiplier = 7.5f;
     }

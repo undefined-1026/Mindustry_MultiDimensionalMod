@@ -1,5 +1,6 @@
 package mDimension.world.type;
 
+import arc.func.Boolf;
 import arc.func.Cons;
 import arc.func.Cons2;
 import arc.func.Cons3;
@@ -22,12 +23,11 @@ import mindustry.ctype.UnlockableContent;
 public class Beam extends UnlockableContent {
 
     public int energyLevel = 3;
-    public Seq<Beam> all = new Seq<>();
+    public static final Seq<Beam> all = new Seq<>();
+    public Seq<BeamEntity> beamEntities = new Seq<>(false,128);
     public float noCollisionScl = 0.5f;
 
     public int length = 15;
-
-    public int beamID = -1;
     //no achieve
     public boolean hasDamage = false;
     public float layer = MDRenderer.extBloomLayer;
@@ -60,9 +60,15 @@ public class Beam extends UnlockableContent {
         }else {
             this.databaseTag = "laser";
         }
+        drawer = new BeamDrawers(
+                new BeamDrawLayer(0.2f, color, 5f, 6f),
+                new BeamDrawLayer(1f, color, 3f, 3.5f),
+                new BeamDrawLayer(1f, Color.white, 1f, 1.15f) {{
+                    canDrawOfPolarizing = false;
+                }}
+        );
     }
     {
-        this.beamID = all.size;
         all.add(this);
     }
 
@@ -75,6 +81,7 @@ public class Beam extends UnlockableContent {
     public void setStats() {
         stats.add(MD_Stat.energyLevel,energyLevel);
     }
+    public BeamDrawers drawer;
     public Cons2<BeamEntity,Float> beamDrawer= (l,a)->{
         basicDraw(l,(last,now,scl)->{
             scl*=1.15f;
@@ -136,6 +143,75 @@ public class Beam extends UnlockableContent {
             MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
         });
     };
+    public static class BeamDrawers{
+        public BeamDrawLayer[] drawLayers;
+        public BeamDrawers(BeamDrawLayer... drawLayers) {
+            this.drawLayers = drawLayers;
+        }
+    }
+    public static class BeamDrawLayer {
+        public boolean canDrawOfPolarizing = true;
+        public float stroke;
+        public Color color = Color.white;
+        public float capSize;
+        public float alpha = 1f;
+        public BeamDrawLayer() {
+        }
+        public BeamDrawLayer(float alpha, Color color, float stroke, float capSize) {
+            this.alpha = alpha;
+            this.color = color;
+            this.stroke = stroke;
+            this.capSize = capSize;
+        }
+
+
+        public void draw(BeamEntity e){
+            if (!e.vertexes.isEmpty()) {
+                drawLine(e.vertexes,e.strokeScl);
+                drawVertexes(e.vertexes,e.strokeScl);
+                var vertexes = e.vertexes;
+                float sx = vertexes.get(0),sy = vertexes.get(1),ss = vertexes.get(2);
+                float ex = vertexes.get(vertexes.size-3),ey = vertexes.get(vertexes.size-2),es = vertexes.get(vertexes.size-1);
+                ;
+                drawStartCap(sx,sy,ss,e.strokeScl,e.launchRotation);
+                if(e.isBlocked){
+                    drawBlockedEndCap(ex,ey,es,e.strokeScl,e.rotation);
+                }else drawEndCap(ex,ey,es,e.strokeScl,e.rotation);
+            }
+        }
+        public void drawLine(FloatSeq vertexes,float strokeScl) {
+            float str = stroke*strokeScl;
+            for (int i = 0; i+4< vertexes.size; i+=3) {
+                float x = vertexes.get(i),y = vertexes.get(i+1),s = vertexes.get(i+2);
+                if(!canDrawOfPolarizing && s<0.99f)continue;
+                float nx = vertexes.get(i+3),ny = vertexes.get(i+4);
+                Lines.stroke(s*str);
+                Lines.line(x,y,nx,ny,false);
+            }
+        }
+        public void drawVertexes(FloatSeq vertexes,float strokeScl){
+            float str = stroke*strokeScl/2f;
+            for (int i = 3; i+5< vertexes.size; i+=3) {
+                float x = vertexes.get(i),y = vertexes.get(i+1),s = vertexes.get(i+2);
+                if(!canDrawOfPolarizing && s<0.99f)continue;
+                Fill.circle(x,y,s*str);
+            }
+        }
+        public void drawStartCap(float x,float y,float s,float strokeScl,Vec2 startVel) {
+            if(!canDrawOfPolarizing && s<0.99f)return;
+            float str = capSize*strokeScl/2f;
+            Fill.circle(x,y,s*str);
+        }
+        public void drawEndCap(float x,float y,float s,float strokeScl,Vec2 endVel) {
+            if(!canDrawOfPolarizing && s<0.99f)return;
+            float str = stroke*strokeScl;
+            Lines.stroke(str*s);
+            MDLines.line2(x,y,x + endVel.x*6f,y + endVel.y*6f);
+        }
+        public void drawBlockedEndCap(float x,float y,float s,float strokeScl,Vec2 endVel) {
+            drawStartCap(x,y,s,strokeScl,endVel);
+        }
+    }
 
 
     public void basicDraw(BeamEntity l,
@@ -144,7 +220,7 @@ public class Beam extends UnlockableContent {
                           Cons2<Vec2,Float> cap,
                           Cons3<Vec2,Vec2,Float> end){
         float scl = l.strokeScl;
-        FloatSeq v = l.vertexs;
+        FloatSeq v = l.vertexes;
         for(int i = 1; i< v.size/3-1; i++){
             Draw.z(layer);
             node.get(Tmp.v2.set(v.get(i*3), v.get(i*3+1)) , scl* v.get(i*3+2));
@@ -169,28 +245,4 @@ public class Beam extends UnlockableContent {
         }
         Draw.reset();
     }
-    public static void DrawCap(BeamEntity l,Cons<Vec2> cap){
-        cap.get( Tmp.v1.set(l.vertexs.get(0) , l.vertexs.get(1)));
-        if(l.isBlocked){
-            int size = l.vertexs.size;
-            cap.get( Tmp.v1.set(l.vertexs.get(size-2) , l.vertexs.get(size-1)));
-        }
-    };
-    public static void DrawEnd(BeamEntity l){};
-    public static void particleFlowDraw(BeamEntity l, Color color, float length, float spread, float amountMulti, float alpha, float Layer){
-        color = color.a(Math.min(alpha*l.beamData.power/10,1));
-        Draw.color(color);
-        Draw.z(Layer);
-        Lines.stroke(0.5f);
-        for(int i = 1; i<l.vertexs.size/3; i++){
-            Vec2 lp = Tmp.v1.set(l.vertexs.get(i*2-2),l.vertexs.get(i*2-1));
-            Vec2 np = Tmp.v2.set(l.vertexs.get(i*2),l.vertexs.get(i*2+1));
-            float len = Tmp.v1.set(np).sub(lp).len();
-            Drawff.particleFlow(l.id,4f,lp.x,lp.y,np.x,np.y,(int)(len*amountMulti), length,spread,3);
-        }
-        Draw.reset();
-    }
-
-
-
 }

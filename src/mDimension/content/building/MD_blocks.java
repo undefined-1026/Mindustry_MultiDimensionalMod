@@ -89,41 +89,43 @@ public class MD_blocks {
         MD_Storages.load();
         MD_Powers.load();
         MD_Payloads.load();
-        Block test = new FluxCrafter("testBlock"){{
-            requirements(Category.crafting,BuildVisibility.sandboxOnly,with());
-            consume(new ConsumeFlux(){{
-                produceAmount = 3/60f;
-                capacity = 30f;
-            }});
-            craftTime = 30f;
-            drawDisabled = true;
+        if (false) {
+            Block test = new FluxCrafter("testBlock"){{
+                requirements(Category.crafting,BuildVisibility.sandboxOnly,with());
+                consume(new ConsumeFlux(){{
+                    produceAmount = 3/60f;
+                    capacity = 30f;
+                }});
+                craftTime = 30f;
+                drawDisabled = true;
+            }
+
+            };
+            Block test1 = new FluxNode("node"){{
+                requirements(Category.power,BuildVisibility.sandboxOnly,with());
+                size = 1;
+                enableDrawStatus = false;
+                drawDisabled = true;
+            }};
+
+            Block test11 = new PayloadPlatform("test11"){{
+                requirements(Category.units,BuildVisibility.sandboxOnly,with());
+                size = 5;
+                regionSuffix = "-dark";
+            }};
+
+            Block test12 = new PayloadPlatformConstructor("test12"){{
+                requirements(Category.units,BuildVisibility.sandboxOnly,with());
+                addUpgrade(MD_UnitTypes.mouse, MD_UnitTypes.coyote,35*60);
+                size = 2;
+            }};
+
+            Block test13 = new PayloadPlatformConstructor("test13"){{
+                requirements(Category.units,BuildVisibility.sandboxOnly,with());
+                addUpgrade(MD_UnitTypes.coyote, MD_UnitTypes.zircon,40*60);
+                size = 2;
+            }};
         }
-
-        };
-        Block test1 = new FluxNode("node"){{
-            requirements(Category.power,BuildVisibility.sandboxOnly,with());
-            size = 1;
-            enableDrawStatus = false;
-            drawDisabled = true;
-        }};
-
-        Block test11 = new PayloadPlatform("test11"){{
-            requirements(Category.units,BuildVisibility.sandboxOnly,with());
-            size = 5;
-            regionSuffix = "-dark";
-        }};
-
-        Block test12 = new PayloadPlatformConstructor("test12"){{
-            requirements(Category.units,BuildVisibility.sandboxOnly,with());
-            addUpgrade(MD_UnitTypes.mouse, MD_UnitTypes.coyote,35*60);
-            size = 2;
-        }};
-
-        Block test13 = new PayloadPlatformConstructor("test13"){{
-            requirements(Category.units,BuildVisibility.sandboxOnly,with());
-            addUpgrade(MD_UnitTypes.coyote, MD_UnitTypes.zircon,40*60);
-            size = 2;
-        }};
 
     }
     public static void loadAmmo(){

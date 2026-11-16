@@ -1,6 +1,5 @@
 package mDimension.entity;
 
-import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
@@ -11,12 +10,12 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.content.MD_beams;
-import mDimension.util.MDModStatus;
+import mDimension.core.BeamRenderer;
 import mDimension.world.blocks.beam.BeamBlock;
 import mDimension.world.blocks.BeamConsumer;
 import mDimension.world.type.BeamStack;
 import mDimension.world.type.Beam;
-import mDimension.world.blocks.MD_BeamCrafter;
+import mDimension.world.blocks.MD_BeamLaunch;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.core.World;
@@ -25,8 +24,6 @@ import mindustry.gen.*;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-
-import java.util.Arrays;
 
 public class BeamEntity implements Entityc, Drawc {
     protected transient int index__all;
@@ -40,11 +37,12 @@ public class BeamEntity implements Entityc, Drawc {
 
     public int createId;
     public boolean collision = true;
+    public float clipSize = 8*20;
 
     public Vec2 rotation = new Vec2(1,0);
-    public Vec2 launchRotation;
+    public Vec2 launchRotation = new Vec2(1,0);
 
-    public FloatSeq vertexs = new FloatSeq(9);
+    public FloatSeq vertexes = new FloatSeq(9);
 
     public float x;
     public float y;
@@ -67,13 +65,13 @@ public class BeamEntity implements Entityc, Drawc {
 
     public void reast(){
         passBuild.clear();
-        vertexs.clear();
+        vertexes.clear();
         isBlocked = false;
         cx=x;cy=y;
         rotation.set(launchRotation);
         cycleLength = beamData.length;
         collision = true;
-        if(owner.block instanceof MD_BeamCrafter laserCrafter){
+        if(owner.block instanceof MD_BeamLaunch laserCrafter){
             laserCrafter.beamReasted(owner,this);
         }
     }
@@ -81,13 +79,13 @@ public class BeamEntity implements Entityc, Drawc {
     public void setPower(float power){this.beamData.setPower(power);}
 
     public void start(float x,float y,Vec2 r){
-        vertexs.add(x +r.x*4,y +r.y*4,collision?1f:beam.noCollisionScl);
+        vertexes.add(x +r.x*4,y +r.y*4,collision?1f:beam.noCollisionScl);
     }
     public void node(float x, float y){
-        vertexs.add(x,y,collision?1f:beam.noCollisionScl);
+        vertexes.add(x,y,collision?1f:beam.noCollisionScl);
     }
     public void end(float x,float y,Vec2 r){
-        vertexs.add(x -r.x*4,y -r.y*4,collision?1f:beam.noCollisionScl);
+        vertexes.add(x -r.x*4,y -r.y*4,collision?1f:beam.noCollisionScl);
     }
     public void updateEntity(){
         warmup = Mathf.approachDelta(warmup,beamData.power > 0.01f ?1f:0f,1.5f/60f);
@@ -99,9 +97,9 @@ public class BeamEntity implements Entityc, Drawc {
     public void update() {
         this.strokeScl = scl();
 
-        if (!(owner instanceof MD_BeamCrafter.TestCrafterBuild tcb) || !owner.isValid()
-                || createId < 0 || createId >= tcb.crafterLasers.length
-                || tcb.crafterLasers[createId] != this) {
+        if (!(owner instanceof MD_BeamLaunch.MD_BeamLaunchBuild tcb) || !owner.isValid()
+                || createId < 0 || createId >= tcb.crafterBeams.length
+                || tcb.crafterBeams[createId] != this) {
             remove();
             return;
         }
@@ -163,14 +161,15 @@ public class BeamEntity implements Entityc, Drawc {
             end(cx,cy,rotation);
             isBlocked = false;
         }
+        clipSize = Math.max(Math.abs(cx-x),Math.abs(cy-y))+10;
     }
 
 
     @Override
     public void draw() {
-        Draw.mixcol(beam.toColor,(strokeScl -1) * 2.5f);
-        if(warmup>0.01f) beam.beamDrawer.get(this, MDModStatus.beamOpacity);
-        Draw.reset();
+        //Draw.mixcol(beam.toColor,(strokeScl -1) * 2.5f);
+        //if(warmup>0.01f) beam.beamDrawer.get(this, MDModStatus.beamOpacity);
+        //Draw.reset();
     }
 
 
@@ -186,10 +185,10 @@ public class BeamEntity implements Entityc, Drawc {
     public void create(float x, float y,Vec2 rotation,int id){
         this.x = x;
         this.y = y;
-        if(buildOn()!=null && buildOn() instanceof MD_BeamCrafter.TestCrafterBuild tcb && id >=0){
-            tcb.crafterLasers[id] = this;
+        if(buildOn()!=null && buildOn() instanceof MD_BeamLaunch.MD_BeamLaunchBuild tcb && id >=0){
+            tcb.crafterBeams[id] = this;
         }
-        this.launchRotation = rotation;
+        this.launchRotation.set(rotation);
         this.beamData = new BeamStack(beam,0);
         this.createId = id;
         add();
@@ -203,9 +202,10 @@ public class BeamEntity implements Entityc, Drawc {
     @Override
     public void add() {
         if(!added) {
-            this.index__draw = Groups.draw.addIndex(this);
+            //this.index__draw = Groups.draw.addIndex(this);
             this.index__all = Groups.all.addIndex(this);
             added = true;
+            BeamRenderer.add(this);
         }
 
     }
@@ -213,11 +213,11 @@ public class BeamEntity implements Entityc, Drawc {
     public void remove() {
         Groups.all.removeIndex(this, this.index__all);
         this.index__all = -1;
-        Groups.draw.removeIndex(this, this.index__draw);
-        this.index__draw = -1;
+//        Groups.draw.removeIndex(this, this.index__draw);
+//        this.index__draw = -1;
         Groups.all.remove(this);
-        Groups.draw.remove(this);
-
+        //Groups.draw.remove(this);
+        BeamRenderer.remove(this);
         if (Vars.net.client()) {
             Vars.netClient.addRemovedEntity(this.id());
         }
